@@ -9,8 +9,9 @@ CRON=$DEVICE/etc/crontabs/root
 MENU=$DEVICE/usr/share/luci/menu.d/luci-app-mu300.json
 VIEW=$DEVICE/www/luci-static/resources/view/mu300
 I18N=$DEVICE/usr/lib/lua/luci/i18n
+VPN_RPC=$DEVICE/usr/libexec/rpcd/mu300vpn
 mkdir -p "$PACKAGE" "$BIN" "$BIN/../lib/vpn" "$DEVICE/tmp" "$DEVICE/root" \
-    "$DEVICE/etc/init.d" "${CRON%/*}" "${MENU%/*}" "$VIEW" "$I18N"
+    "$DEVICE/etc/init.d" "${CRON%/*}" "${MENU%/*}" "${VPN_RPC%/*}" "$VIEW" "$I18N"
 cp -R "$ROOT/assets" "$ROOT/scripts" "$ROOT/snippets" "$ROOT/i18n" "$ROOT/VERSION" "$PACKAGE/"
 for file in install.sh uninstall.sh; do
     sed "s|/tmp/|$DEVICE/tmp/|g; s|/root/|$DEVICE/root/|g; s|/etc/|$DEVICE/etc/|g;
@@ -20,6 +21,8 @@ for file in install.sh uninstall.sh; do
          s|/var/luci-|$DEVICE/var/luci-|g" "$ROOT/$file" > "$PACKAGE/$file"
 done
 cp "$T/driver" "$BIN/../lib/vpn/mihomo.sh"
+cp "$T/sb-driver" "$BIN/../lib/vpn/sing-box.sh"
+cp "$T/vpn-rpc" "$VPN_RPC"
 cp "$T/sub.js" "$VIEW/vpn-subscriptions.js"
 cp "$T/overview.js" "$VIEW/vpn-overview.js"
 printf '%s\n' '{"admin/vpn/mu300-overview":{"action":{"path":"mu300/vpn-overview"}},"admin/vpn/mu300-subscriptions":{"action":{"path":"mu300/vpn-subscriptions"}}}' > "$MENU"
@@ -59,12 +62,16 @@ TEST_FAIL_RPC=1 reject "$PACKAGE/install.sh"
 run "$BACK/uninstall.sh"
 cmp "$CRON" "$T/original-cron"
 cmp "$BIN/mu300-vpn" "$T/original-cli"
+cmp "$BIN/../lib/vpn/sing-box.sh" "$T/sb-driver"
+cmp "$VPN_RPC" "$T/vpn-rpc"
 [ ! -e "$VIEW/vpn-overview-enhance.js" ]
 [ ! -e "$I18N/mu300-vpn-enhance.tr.lmo" ]
 
 run "$PACKAGE/install.sh"
 grep -Fq "17 * * * * $BIN/mu300-vpn subscription refresh --due" "$CRON"
 grep -Fq '23 3 * * * /bin/true' "$CRON"
+grep -Fq 'prepare-sing-box' "$BIN/../lib/vpn/sing-box.sh"
+grep -Fq 'auto|links|mihomo|sing-box|dae' "$VPN_RPC"
 for lang in zh-cn tr; do
     name=mu300-vpn-enhance.$lang.lmo
     cmp "$ROOT/i18n/$name" "$I18N/$name"

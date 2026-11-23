@@ -8,20 +8,20 @@ msgstr "Proxy düğümü"
 msgid "Selection unavailable"
 msgstr "Seçim yapılamıyor"
 
-msgid "Mihomo status is unavailable. Check the LuCI connection."
-msgstr "Mihomo durumu alınamadı. LuCI bağlantısını kontrol edin."
+msgid "Node status is unavailable. Check the LuCI connection."
+msgstr "Düğüm durumu alınamadı. LuCI bağlantısını kontrol edin."
 
-msgid "Choose a Mihomo profile to select a proxy node."
-msgstr "Proxy düğümü seçmek için bir Mihomo profili seçin."
+msgid "Choose a Mihomo or sing-box profile to select a proxy node."
+msgstr "Proxy düğümü seçmek için bir Mihomo veya sing-box profili seçin."
 
-msgid "Node selection is available only for Mihomo profiles."
-msgstr "Düğüm seçimi yalnızca Mihomo profillerinde kullanılabilir."
+msgid "Node selection is available for Mihomo and sing-box profiles."
+msgstr "Düğüm seçimi Mihomo ve sing-box profillerinde kullanılabilir."
 
-msgid "Start the VPN to connect to the Mihomo controller."
-msgstr "Mihomo denetleyicisine bağlanmak için VPN'i başlatın."
+msgid "Start the VPN with a profile that has manual proxy groups."
+msgstr "VPN'i elle seçim yapılabilen proxy grupları içeren bir profille başlatın."
 
-msgid "This Mihomo profile has no manual proxy groups."
-msgstr "Bu Mihomo profilinde elle seçim yapılabilen proxy grubu yok."
+msgid "This profile has no manual proxy groups."
+msgstr "Bu profilde elle seçim yapılabilen proxy grubu yok."
 
 msgid "Proxy group"
 msgstr "Proxy grubu"
@@ -41,20 +41,20 @@ msgstr "Düğüm değişikliği hemen uygulanır ve bu profil için kaydedilir. 
 msgid "Refresh node status"
 msgstr "Düğüm durumunu yenile"
 
-msgid "Mihomo node selection"
-msgstr "Mihomo düğüm seçimi"
+msgid "Proxy node selection"
+msgstr "Proxy düğümü seçimi"
 
-msgid "Detect (prefer full Mihomo YAML)"
-msgstr "Otomatik algıla (tam Mihomo YAML'ı tercih et)"
+msgid "Detect (prefer full configurations)"
+msgstr "Otomatik algıla (tam yapılandırmaları tercih et)"
 
 msgid "Full Clash/Mihomo YAML (one profile for all nodes)"
 msgstr "Tam Clash/Mihomo YAML (tüm düğümler için tek profil)"
 
-msgid "Automatic detection prefers a single Mihomo YAML profile and falls back to individual links. Subscriptions using links continue to refresh in that format. The URL may contain your account token and is readable only by root."
-msgstr "Otomatik algılama tek bir Mihomo YAML profilini tercih eder; bu mümkün değilse ayrı bağlantıları kullanır. Bağlantıları kullanan abonelikler aynı biçimde yenilenmeye devam eder. URL, hesap belirtecinizi içerebilir ve yalnızca root tarafından okunabilir."
+msgid "Automatic detection tries sing-box JSON, then Mihomo YAML, then individual links. Each subscription keeps its detected format on refresh. The URL may contain your account token and is readable only by root."
+msgstr "Otomatik algılama sırasıyla sing-box JSON, Mihomo YAML ve ayrı bağlantıları dener. Yenilemede her aboneliğin algılanan biçimi korunur. URL, hesap belirtecinizi içerebilir ve yalnızca root tarafından okunabilir."
 
-msgid "No active Mihomo profile."
-msgstr "Etkin bir Mihomo profili yok."
+msgid "No active Mihomo or sing-box profile."
+msgstr "Etkin bir Mihomo veya sing-box profili yok."
 
 msgid "Choose a proxy group and node."
 msgstr "Bir proxy grubu ve düğüm seçin."
@@ -62,14 +62,14 @@ msgstr "Bir proxy grubu ve düğüm seçin."
 msgid "The group or node name is too long."
 msgstr "Grup veya düğüm adı çok uzun."
 
-msgid "The Mihomo controller is unavailable."
-msgstr "Mihomo denetleyicisine erişilemiyor."
+msgid "The node controller is unavailable."
+msgstr "Düğüm denetleyicisine erişilemiyor."
 
 msgid "The node does not belong to the selected group."
 msgstr "Düğüm seçilen gruba ait değil."
 
-msgid "Mihomo rejected the node change."
-msgstr "Mihomo düğüm değişikliğini reddetti."
+msgid "The proxy engine rejected the node change."
+msgstr "Proxy motoru düğüm değişikliğini reddetti."
 
 msgid "The node switched, but the selection could not be saved."
 msgstr "Düğüm değiştirildi, ancak seçim kaydedilemedi."
@@ -79,3 +79,6 @@ msgstr "İstek çok büyük."
 
 msgid "Unknown operation."
 msgstr "Bilinmeyen işlem."
+
+msgid "Full sing-box JSON (one profile for all nodes)"
+msgstr "Tam sing-box JSON (tüm düğümler için tek profil)"

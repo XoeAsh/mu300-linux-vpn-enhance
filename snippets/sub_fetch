@@ -1,11 +1,36 @@
-    # Request Clash YAML for new auto and all mihomo subscriptions.
-    # Refresh subscriptions that use per-node profiles in the same format.
+sub_fetch_apply() (
+    run_dir || exit 1
+    _f=$RUN/sub.$$
+    trap 'rm -f "$_f" "$_f.l"' EXIT
+    URL=$(cat "$SUBS/$1/url" 2>/dev/null) || URL=
+    [ -n "$URL" ] || { echo "subscription $1 has no URL" >&2; exit 1; }
+    kv_var _ins "$SUBS/$1/meta" INSECURE
+    URL_INSECURE=$_ins
     kv_var _want "$SUBS/$1/meta" TYPE
     kv_var _previous_fmt "$SUBS/$1/meta" FORMAT
-    SUB_PREFER_MIHOMO=0
+
+    # Once selected, keep the format to protect profile IDs, groups and selections.
     case $_want in
-        mihomo) SUB_PREFER_MIHOMO=1 ;;
-        auto) [ "$_previous_fmt" = links ] || SUB_PREFER_MIHOMO=1 ;;
+        sing-box|mihomo) _formats=$_want ;;
+        links|dae) _formats=links ;;
+        auto)
+            case $_previous_fmt in
+                sing-box|mihomo|links) _formats=$_previous_fmt ;;
+                *) _formats='sing-box mihomo any' ;;
+            esac ;;
+        *) exit 1 ;;
     esac
-    fetch_to "$URL" "$_f" || { URL=; URL_INSECURE=; SUB_PREFER_MIHOMO=0; return 1; }
-    SUB_PREFER_MIHOMO=0
+    for _candidate in $_formats; do
+        case $_candidate in
+            sing-box) SUB_DOWNLOAD_UA=sing-box/1.14.1 ;;
+            mihomo) SUB_DOWNLOAD_UA=ClashMeta/1.19.0 ;;
+            *) SUB_DOWNLOAD_UA= ;;
+        esac
+        fetch_to "$URL" "$_f" || continue
+        _fmt=$(sub_format "$_f") || continue
+        [ "$_candidate" = any ] || [ "$_fmt" = "$_candidate" ] || continue
+        sub_apply "$1" "$_f" "$_fmt" "$_want" && exit 0
+    done
+    echo "subscription $1 has no usable response for its requested or saved format" >&2
+    exit 1
+)

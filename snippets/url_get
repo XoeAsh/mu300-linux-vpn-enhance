@@ -1,6 +1,5 @@
-        # Prefer Clash/Mihomo YAML only for native auto/mihomo subscriptions.
-        if [ "${SUB_PREFER_MIHOMO:-0}" = 1 ]; then
-            printf 'url = "%s"\n' "$1" | curl -fsSL -m 30 --proto "$_p" --proto-redir "$_p" -A 'ClashMeta/1.19.0' -K - 2>/dev/null
+        if [ -n "${SUB_DOWNLOAD_UA:-}" ]; then
+            printf 'url = "%s"\n' "$1" | curl -fsSL -m 30 --proto "$_p" --proto-redir "$_p" -A "$SUB_DOWNLOAD_UA" -K - 2>/dev/null
         else
             printf 'url = "%s"\n' "$1" | curl -fsSL -m 30 --proto "$_p" --proto-redir "$_p" -K - 2>/dev/null
         fi

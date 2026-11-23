@@ -1,1 +1,1 @@
-            E('option', { 'value': 'auto' }, [ _('Detect (prefer full Mihomo YAML)') ]),
+            E('option', { 'value': 'auto' }, [ _('Detect (prefer full configurations)') ]),

@@ -1,5 +1,9 @@
-            # Do not restart a live Mihomo tunnel for an identical subscription YAML.
-            if [ "$_ot" = mihomo ] && [ -r "$PROFILES/$_hit/config.yaml" ] &&
-               cmp -s "$3" "$PROFILES/$_hit/config.yaml"; then
+            # An unchanged complete configuration does not restart a live tunnel.
+            _stored=
+            case $_ot in
+                mihomo) _stored=config.yaml ;;
+                sing-box) _stored=config.json ;;
+            esac
+            if [ -n "$_stored" ] && cmp -s "$3" "$PROFILES/$_hit/$_stored"; then
                 sub_mark "$_sid" "$_hit"; _keep="$_keep $_hit"
             elif ( profile_edit "$_hit" "$3" ) >/dev/null 2>&1; then

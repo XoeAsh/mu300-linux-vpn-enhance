@@ -18,9 +18,9 @@ const messages = new Set([
 
 const render = new Function('baseclass', 'rpc', 'V', 'E', '_', card);
 for (const [language, expected] of [
-    ['en', 'Mihomo node selection'],
-    ['zh-cn', 'Mihomo 节点选择'],
-    ['tr', 'Mihomo düğüm seçimi']
+    ['en', 'Proxy node selection'],
+    ['zh-cn', '代理节点选择'],
+    ['tr', 'Proxy düğümü seçimi']
 ]) {
     const catalog = new Map();
     if (language !== 'en') {

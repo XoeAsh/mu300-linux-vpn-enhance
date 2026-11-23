@@ -1,1 +1,1 @@
-            V.note(_('Automatic detection prefers a single Mihomo YAML profile and falls back to individual links. Subscriptions using links continue to refresh in that format. The URL may contain your account token and is readable only by root.'))
+            V.note(_('Automatic detection tries sing-box JSON, then Mihomo YAML, then individual links. Each subscription keeps its detected format on refresh. The URL may contain your account token and is readable only by root.'))

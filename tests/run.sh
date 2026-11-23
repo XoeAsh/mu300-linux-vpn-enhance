@@ -27,32 +27,27 @@ sub_apply() {
         mihomo) _put "$_sname" mihomo "$_file" ;;
     esac
 }
+sub_format() {
+    if grep -q '^proxies:' "$1"; then echo mihomo; else echo links; fi
+}
 sub_fetch_apply() {
     fetch_to "$URL" "$_f" || { URL=; URL_INSECURE=; return 1; }
     sub_apply "$1" "$_f" "$_fmt" "$_want"
     rm -f "$_f"
 }
+subscription_usage() {
+    echo "usage: mu300-vpn subscription add NAME URL|- [--type auto|links|mihomo|dae]"
+}
+subscription_cmd() {
+    case $_type in auto|links|mihomo|dae) : ;; esac
+}
 SRC
 awk -v base="$ROOT/snippets/" -f "$ROOT/scripts/patch-native-cli.awk" "$T/cli" > "$T/cli.patched" || fail 'CLI patch'
-grep -Fq 'SUB_PREFER_MIHOMO=1' "$T/cli.patched" || fail 'CLI user agent'
+grep -Fq 'SUB_DOWNLOAD_UA=sing-box/1.14.1' "$T/cli.patched" || fail 'CLI user agent'
 grep -Fq 'cmp -s' "$T/cli.patched" || fail 'CLI no-change'
-grep -Fq 'mihomo YAML import/check failed' "$T/cli.patched" || fail 'CLI invalid YAML'
+grep -Fq 'subscription import/check failed' "$T/cli.patched" || fail 'CLI invalid complete config'
 ! awk -v base="$ROOT/snippets/" -f "$ROOT/scripts/patch-native-cli.awk" "$T/cli.patched" >/dev/null 2>&1 || fail 'CLI double patch should fail'
-sh -s "$T" <<'SRC' || fail 'CLI import status and download cleanup'
-set -eu
-. "$1/cli.patched"
-_f=$1/download SUBS=$1/subscriptions URL=https://example.invalid _fmt=mihomo _want=mihomo
-kv_var() { case "$1" in _previous_fmt) _previous_fmt= ;; esac; }
-fetch_to() { : > "$2"; }
-sub_apply() { return "$result"; }
-result=23
-status=0
-sub_fetch_apply example || status=$?
-[ "$status" = 23 ] && [ ! -e "$_f" ] || exit 1
-result=0
-sub_fetch_apply example
-[ ! -e "$_f" ]
-SRC
+sh "$ROOT/tests/subscriptions.sh" "$T" || fail 'CLI format selection and fallback'
 cat > "$T/driver" <<'SRC'
 MIHOMO_OURS='routing-mark allow-lan bind-address tun dns'
 routing-mark: $((MARK))
@@ -62,13 +57,28 @@ awk -f "$ROOT/scripts/patch-mihomo-driver.awk" "$T/driver" > "$T/driver.patched"
 grep -Fq 'external-controller-unix: /run/mu300-vpn/mihomo-control.sock' "$T/driver.patched" || fail 'Mihomo socket'
 grep -Fq '/usr/libexec/mu300-mihomo-selector restore' "$T/driver.patched" || fail 'Mihomo restore'
 ! awk -f "$ROOT/scripts/patch-mihomo-driver.awk" "$T/driver.patched" >/dev/null 2>&1 || fail 'driver double patch should fail'
+cat > "$T/sb-driver" <<'SRC'
+drv_start() { exec "$BIN" run -c "$RUN/config.json" --disable-color; }
+SRC
+awk -f "$ROOT/scripts/patch-sing-box-driver.awk" "$T/sb-driver" > "$T/sb-driver.patched"
+sh -n "$T/sb-driver.patched"
+grep -Fq 'prepare-sing-box' "$T/sb-driver.patched" || fail 'sing-box controller startup'
+cat > "$T/vpn-rpc" <<'SRC'
+m_sub_add() {
+    allowed "${type:-auto}" '(auto|links|mihomo|dae)' || return 1
+}
+SRC
+awk -f "$ROOT/scripts/patch-subscription-rpc.awk" "$T/vpn-rpc" > "$T/vpn-rpc.patched"
+sh -n "$T/vpn-rpc.patched"
+grep -Fq '(auto|links|mihomo|sing-box|dae)' "$T/vpn-rpc.patched" || fail 'sing-box RPC format'
 cat > "$T/sub.js" <<'SRC'
             E('option', { 'value': 'auto' }, [ _('Detect') ]),
             E('option', { 'value': 'mihomo' }, [ _('Clash/mihomo YAML: one mihomo profile') ]),
             V.note(_('The URL usually holds your account token: it is stored on the device readable by root only, and never shown again.'))
 SRC
 awk -v base="$ROOT/snippets/" -f "$ROOT/scripts/patch-subscription-view.awk" "$T/sub.js" > "$T/sub.patched.js" || fail 'subscriptions page patch'
-grep -Fq "_('Detect (prefer full Mihomo YAML)')" "$T/sub.patched.js" || fail 'subscriptions auto UI'
+grep -Fq "_('Detect (prefer full configurations)')" "$T/sub.patched.js" || fail 'subscriptions auto UI'
+grep -Fq "'value': 'sing-box'" "$T/sub.patched.js" || fail 'subscriptions sing-box UI'
 ! awk -v base="$ROOT/snippets/" -f "$ROOT/scripts/patch-subscription-view.awk" "$T/sub.patched.js" >/dev/null 2>&1 || fail 'subscriptions double patch should fail'
 cat > "$T/overview.js" <<'SRC'
 'require mu300.vpn as V';

@@ -1,4 +1,4 @@
-# Patch upstream subscriptions page, replacing only UI text for Mihomo handling.
+# Add the full JSON format to the stock subscription view.
 function put(f, line, rc) {
     while ((rc = (getline line < (base f))) > 0) print line
     if (rc < 0) { print "Cannot read snippet: " base f > "/dev/stderr"; exit 60 }

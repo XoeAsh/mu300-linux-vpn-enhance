@@ -1,1 +1,2 @@
             E('option', { 'value': 'mihomo' }, [ _('Full Clash/Mihomo YAML (one profile for all nodes)') ]),
+            E('option', { 'value': 'sing-box' }, [ _('Full sing-box JSON (one profile for all nodes)') ]),

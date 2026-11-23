@@ -1,0 +1,7 @@
+    if [ "$(tr -d ' \t\r\n' < "$1" | head -c 1)" = '{' ]; then
+        json_strict "$1" "the subscription JSON" &&
+            jq -e '(.outbounds | type == "array" and length > 0 and
+                all(.[]; type == "object" and (.type | type) == "string"))' "$1" >/dev/null 2>&1 ||
+            { echo "not a sing-box JSON subscription with outbounds" >&2; return 1; }
+        echo sing-box; return 0
+    fi

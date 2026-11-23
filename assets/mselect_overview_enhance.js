@@ -3,9 +3,7 @@
 'require rpc';
 'require mu300.vpn as V';
 
-/* One persistent card on Overview; works with any active Mihomo YAML containing
- * a type: select strategy group. Server-side permissions and values are checked
- * against Mihomo's Unix-socket API. No proxy credentials are exposed. */
+/* One card for the active profile's manual groups. The RPC only exposes node names. */
 var get = rpc.declare({ object: 'mu300mselect', method: 'get', expect: { '': {} } });
 var setNode = rpc.declare({ object: 'mu300mselect', method: 'set', params: [ 'group', 'name' ], expect: { '': {} } });
 var preferredGroup = null, previousProfile = null;
@@ -31,21 +29,21 @@ function card(d, refresh) {
     }
 
     if (d.ok !== 1) {
-        unavailable(content, _('Mihomo status is unavailable. Check the LuCI connection.'));
+        unavailable(content, _('Node status is unavailable. Check the LuCI connection.'));
     } else if (!d.profile) {
-        unavailable(content, _('Choose a Mihomo profile to select a proxy node.'));
-    } else if (d.type !== 'mihomo') {
-        unavailable(content, _('Node selection is available only for Mihomo profiles.'));
+        unavailable(content, _('Choose a Mihomo or sing-box profile to select a proxy node.'));
+    } else if (d.type !== 'mihomo' && d.type !== 'sing-box') {
+        unavailable(content, _('Node selection is available for Mihomo and sing-box profiles.'));
     } else if (!d.online) {
-        unavailable(content, _('Start the VPN to connect to the Mihomo controller.'));
+        unavailable(content, _('Start the VPN with a profile that has manual proxy groups.'));
     } else if (!Array.isArray(d.groups) || !d.groups.length) {
-        unavailable(content, _('This Mihomo profile has no manual proxy groups.'));
+        unavailable(content, _('This profile has no manual proxy groups.'));
     } else {
         var groups = d.groups.filter(function(g) {
             return g && typeof g.name === 'string' && Array.isArray(g.nodes);
         });
         if (!groups.length) {
-            unavailable(content, _('This Mihomo profile has no manual proxy groups.'));
+            unavailable(content, _('This profile has no manual proxy groups.'));
         } else {
             if (!groups.some(function(g) { return g.name === preferredGroup; })) {
                 var main = groups.filter(function(g) { return g.name !== 'GLOBAL'; });
@@ -90,7 +88,7 @@ function card(d, refresh) {
     var reload = E('button', { 'class': 'mud-btn', type: 'button', 'id': 'mvp-mihomo-refresh' }, [ _('Refresh node status') ]);
     reload.addEventListener('click', function() { return refresh(); });
     content.push(E('div', { 'class': 'mvp-row' }, [ reload ]));
-    return V.card(_('Mihomo node selection'), content, 'mvp-mihomo-panel');
+    return V.card(_('Proxy node selection'), content, 'mvp-mihomo-panel');
 }
 
 return baseclass.extend({

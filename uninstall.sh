@@ -47,6 +47,6 @@ rm -rf /tmp/luci-modulecache /var/luci-modulecache 2>/dev/null || true
 [ ! -x /etc/init.d/uhttpd ] || /etc/init.d/uhttpd restart
 ARCHIVE="$BACK.uninstalled.$(date +%s).$$"
 mv "$BACK" "$ARCHIVE"
-echo '已还原安装前的 CLI、Mihomo driver、LuCI 和 RPC 文件。'
-echo '原生订阅、YAML、配置选择和网络未更改。'
+echo '已还原安装前的 CLI、VPN 驱动、LuCI 和 RPC 文件。'
+echo '订阅、配置文件、节点选择和网络设置已保留。'
 echo "历史备份保留：$ARCHIVE"
