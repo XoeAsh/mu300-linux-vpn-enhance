@@ -1,6 +1,5 @@
     # Request Clash YAML for new auto and all mihomo subscriptions.
-    # Preserve existing auto subscriptions previously recorded as links: don't silently
-    # delete/replace their per-node profiles on the next scheduled refresh.
+    # Refresh subscriptions that use per-node profiles in the same format.
     kv_var _want "$SUBS/$1/meta" TYPE
     kv_var _previous_fmt "$SUBS/$1/meta" FORMAT
     SUB_PREFER_MIHOMO=0

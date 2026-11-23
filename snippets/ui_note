@@ -1,1 +1,1 @@
-            V.note('新订阅的自动识别优先以 Clash/Mihomo 客户端身份请求完整 YAML；机场支持时生成一个包含全部节点的 Mihomo 配置，否则按分享链接逐条导入。已登记为“分享链接”格式的旧自动订阅继续按原格式更新，避免意外删除旧节点；要迁移请新建订阅。选择“完整 YAML”则要求机场返回 YAML。订阅链接可能包含账号令牌，系统仅供 root 读取。')
+            V.note(_('Automatic detection prefers a single Mihomo YAML profile and falls back to individual links. Subscriptions using links continue to refresh in that format. The URL may contain your account token and is readable only by root.'))

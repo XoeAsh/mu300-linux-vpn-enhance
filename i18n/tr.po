@@ -1,0 +1,81 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Proxy node"
+msgstr "Proxy düğümü"
+
+msgid "Selection unavailable"
+msgstr "Seçim yapılamıyor"
+
+msgid "Mihomo status is unavailable. Check the LuCI connection."
+msgstr "Mihomo durumu alınamadı. LuCI bağlantısını kontrol edin."
+
+msgid "Choose a Mihomo profile to select a proxy node."
+msgstr "Proxy düğümü seçmek için bir Mihomo profili seçin."
+
+msgid "Node selection is available only for Mihomo profiles."
+msgstr "Düğüm seçimi yalnızca Mihomo profillerinde kullanılabilir."
+
+msgid "Start the VPN to connect to the Mihomo controller."
+msgstr "Mihomo denetleyicisine bağlanmak için VPN'i başlatın."
+
+msgid "This Mihomo profile has no manual proxy groups."
+msgstr "Bu Mihomo profilinde elle seçim yapılabilen proxy grubu yok."
+
+msgid "Proxy group"
+msgstr "Proxy grubu"
+
+msgid "Current node: %s"
+msgstr "Geçerli düğüm: %s"
+
+msgid "No available nodes"
+msgstr "Kullanılabilir düğüm yok"
+
+msgid "Proxy node switched"
+msgstr "Proxy düğümü değiştirildi"
+
+msgid "Node changes take effect immediately and are saved for this profile. Traffic rules must use the selected group."
+msgstr "Düğüm değişikliği hemen uygulanır ve bu profil için kaydedilir. Trafik kuralları seçilen grubu kullanmalıdır."
+
+msgid "Refresh node status"
+msgstr "Düğüm durumunu yenile"
+
+msgid "Mihomo node selection"
+msgstr "Mihomo düğüm seçimi"
+
+msgid "Detect (prefer full Mihomo YAML)"
+msgstr "Otomatik algıla (tam Mihomo YAML'ı tercih et)"
+
+msgid "Full Clash/Mihomo YAML (one profile for all nodes)"
+msgstr "Tam Clash/Mihomo YAML (tüm düğümler için tek profil)"
+
+msgid "Automatic detection prefers a single Mihomo YAML profile and falls back to individual links. Subscriptions using links continue to refresh in that format. The URL may contain your account token and is readable only by root."
+msgstr "Otomatik algılama tek bir Mihomo YAML profilini tercih eder; bu mümkün değilse ayrı bağlantıları kullanır. Bağlantıları kullanan abonelikler aynı biçimde yenilenmeye devam eder. URL, hesap belirtecinizi içerebilir ve yalnızca root tarafından okunabilir."
+
+msgid "No active Mihomo profile."
+msgstr "Etkin bir Mihomo profili yok."
+
+msgid "Choose a proxy group and node."
+msgstr "Bir proxy grubu ve düğüm seçin."
+
+msgid "The group or node name is too long."
+msgstr "Grup veya düğüm adı çok uzun."
+
+msgid "The Mihomo controller is unavailable."
+msgstr "Mihomo denetleyicisine erişilemiyor."
+
+msgid "The node does not belong to the selected group."
+msgstr "Düğüm seçilen gruba ait değil."
+
+msgid "Mihomo rejected the node change."
+msgstr "Mihomo düğüm değişikliğini reddetti."
+
+msgid "The node switched, but the selection could not be saved."
+msgstr "Düğüm değiştirildi, ancak seçim kaydedilemedi."
+
+msgid "The request is too large."
+msgstr "İstek çok büyük."
+
+msgid "Unknown operation."
+msgstr "Bilinmeyen işlem."

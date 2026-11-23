@@ -67,15 +67,15 @@ case "${1:-}" in
     fi
     ;;
   set)
-    active || error '当前配置不是 Mihomo YAML'
+    active || error 'No active Mihomo profile.'
     group=${2:-}; node=${3:-}
-    [ -n "$group" ] && [ -n "$node" ] || error '请选择代理组和节点'
+    [ -n "$group" ] && [ -n "$node" ] || error 'Choose a proxy group and node.'
     [ "$(printf '%s' "$group" | wc -c)" -le 256 ] && \
-    [ "$(printf '%s' "$node" | wc -c)" -le 256 ] || error '节点或组名称过长'
-    data=$(proxies) && list=$(printf '%s\n' "$data" | groups) || error 'Mihomo 控制接口未连接'
-    member "$list" "$group" "$node" || error '所选节点不属于该策略组'
-    switch_one "$group" "$node" || error 'Mihomo 拒绝了节点切换'
-    save_selection "$group" "$node" || error '已切换，但无法保存重启后的选择'
+    [ "$(printf '%s' "$node" | wc -c)" -le 256 ] || error 'The group or node name is too long.'
+    data=$(proxies) && list=$(printf '%s\n' "$data" | groups) || error 'The Mihomo controller is unavailable.'
+    member "$list" "$group" "$node" || error 'The node does not belong to the selected group.'
+    switch_one "$group" "$node" || error 'Mihomo rejected the node change.'
+    save_selection "$group" "$node" || error 'The node switched, but the selection could not be saved.'
     printf '{"ok":1}\n'
     ;;
   restore)

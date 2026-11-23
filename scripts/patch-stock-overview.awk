@@ -4,9 +4,7 @@ BEGIN { req=0; load=0; reload=0; render=0; repaint=0; sig=0; grid=0; reloadsig=0
   line=$0
   if (line == "'require mu300.vpn as V';") {
     print line
-    print "'require mu300.mselect_overview as MS';"
-    print "'require mu300.vpn_overview_cn as CN';"
-    print "var zh = CN.tr;"
+    print "'require mu300.mselect_overview_enhance as MS';"
     req++
     next
   }
@@ -38,11 +36,10 @@ BEGIN { req=0; load=0; reload=0; render=0; repaint=0; sig=0; grid=0; reloadsig=0
     sub(/paint: function\(st, pl\)/, "paint: function(st, pl, ms)", line)
     sig++
   }
-  if (index(line, "var grid = E('div', { 'class': 'mud-grid' }, [ ctl, ksCard, swCard, v6Card ]);") > 0) {
-    sub(/\[ ctl, ksCard, swCard, v6Card \]/, "[ ctl, ksCard, swCard, v6Card, MS.card(ms, function() { return self.reload(true); }) ]", line)
+  if (index(line, "var grid = E('div', { 'class': 'mud-grid' }, [ ctl, ksCard, swCard, ") > 0 && line ~ / \]\);$/) {
+    sub(/ \]\);$/, ", MS.card(ms, function() { return self.reload(true); }) ]);", line)
     grid++
   }
-  gsub(/_\(/, "zh(", line)
   print line
 }
 END {

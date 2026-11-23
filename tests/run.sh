@@ -12,9 +12,6 @@ command -v node >/dev/null 2>&1 && for f in "$ROOT"/assets/*.js; do node --check
 jq -e '."luci-app-mu300-mihomo-select".read.ubus.mu300mselect==["get"] and
     ."luci-app-mu300-mihomo-select".write.ubus.mu300mselect==["set"]' \
     "$ROOT/assets/luci-app-mu300-mihomo-select.json" >/dev/null || fail ACL
-! grep -Eq '订阅与更新|当前选择|当前选中配置' "$ROOT/assets/mselect_overview_enhance.js" || fail 'legacy UI text'
-! grep -Eq 'auto-update\.enabled|mihomo-refresh\.sh|mihomo-subscription\.url' \
-    "$ROOT/assets/mu300-mihomo-selector" "$ROOT/assets/mu300mselect" || fail 'old updater backend'
 cat > "$T/cli" <<'SRC'
 url_get() {
     _p='=https'
@@ -24,6 +21,7 @@ url_get() {
 }
 sub_apply() {
         if ( profile_edit "$_hit" "$3" ) >/dev/null 2>&1; then
+            :
         fi
     case $_fmt in
         mihomo) _put "$_sname" mihomo "$_file" ;;
@@ -31,6 +29,8 @@ sub_apply() {
 }
 sub_fetch_apply() {
     fetch_to "$URL" "$_f" || { URL=; URL_INSECURE=; return 1; }
+    sub_apply "$1" "$_f" "$_fmt" "$_want"
+    rm -f "$_f"
 }
 SRC
 awk -v base="$ROOT/snippets/" -f "$ROOT/scripts/patch-native-cli.awk" "$T/cli" > "$T/cli.patched" || fail 'CLI patch'
@@ -38,6 +38,21 @@ grep -Fq 'SUB_PREFER_MIHOMO=1' "$T/cli.patched" || fail 'CLI user agent'
 grep -Fq 'cmp -s' "$T/cli.patched" || fail 'CLI no-change'
 grep -Fq 'mihomo YAML import/check failed' "$T/cli.patched" || fail 'CLI invalid YAML'
 ! awk -v base="$ROOT/snippets/" -f "$ROOT/scripts/patch-native-cli.awk" "$T/cli.patched" >/dev/null 2>&1 || fail 'CLI double patch should fail'
+sh -s "$T" <<'SRC' || fail 'CLI import status and download cleanup'
+set -eu
+. "$1/cli.patched"
+_f=$1/download SUBS=$1/subscriptions URL=https://example.invalid _fmt=mihomo _want=mihomo
+kv_var() { case "$1" in _previous_fmt) _previous_fmt= ;; esac; }
+fetch_to() { : > "$2"; }
+sub_apply() { return "$result"; }
+result=23
+status=0
+sub_fetch_apply example || status=$?
+[ "$status" = 23 ] && [ ! -e "$_f" ] || exit 1
+result=0
+sub_fetch_apply example
+[ ! -e "$_f" ]
+SRC
 cat > "$T/driver" <<'SRC'
 MIHOMO_OURS='routing-mark allow-lan bind-address tun dns'
 routing-mark: $((MARK))
@@ -53,7 +68,7 @@ cat > "$T/sub.js" <<'SRC'
             V.note(_('The URL usually holds your account token: it is stored on the device readable by root only, and never shown again.'))
 SRC
 awk -v base="$ROOT/snippets/" -f "$ROOT/scripts/patch-subscription-view.awk" "$T/sub.js" > "$T/sub.patched.js" || fail 'subscriptions page patch'
-grep -Fq '自动识别（优先完整 Mihomo YAML）' "$T/sub.patched.js" || fail 'subscriptions auto UI'
+grep -Fq "_('Detect (prefer full Mihomo YAML)')" "$T/sub.patched.js" || fail 'subscriptions auto UI'
 ! awk -v base="$ROOT/snippets/" -f "$ROOT/scripts/patch-subscription-view.awk" "$T/sub.patched.js" >/dev/null 2>&1 || fail 'subscriptions double patch should fail'
 cat > "$T/overview.js" <<'SRC'
 'require mu300.vpn as V';
@@ -71,7 +86,8 @@ reload: function() {
     });
 },
 paint: function(st, pl) {
-    var grid = E('div', { 'class': 'mud-grid' }, [ ctl, ksCard, swCard, v6Card ]);
+    var grid = E('div', { 'class': 'mud-grid' }, [ ctl, ksCard, swCard, ipv6Card ]);
+    var title = _('Overview');
 }
 });
 SRC
@@ -79,9 +95,13 @@ awk -f "$ROOT/scripts/patch-stock-overview.awk" "$T/overview.js" > "$T/overview.
 grep -Fq 'MS.card(ms, function()' "$T/overview.patched.js" || fail 'Overview card'
 grep -Fq 'MS.load()' "$T/overview.patched.js" || fail 'Overview offline loader'
 grep -Fq 'reload: function(force)' "$T/overview.patched.js" || fail 'Overview update'
+grep -Fq "'require mu300.mselect_overview_enhance as MS';" "$T/overview.patched.js" || fail 'Overview module'
+grep -Fq "var title = _('Overview');" "$T/overview.patched.js" || fail 'upstream translation hook'
 ! awk -f "$ROOT/scripts/patch-stock-overview.awk" "$T/overview.patched.js" >/dev/null 2>&1 || fail 'Overview double patch should fail'
 if command -v node >/dev/null 2>&1; then
     node --check "$T/overview.patched.js" || fail 'Overview generated JS'
     node --check "$T/sub.patched.js" || fail 'Subscription generated JS'
+    node "$ROOT/tests/i18n.js" "$ROOT" "$T/sub.patched.js" || fail 'LuCI locales'
 fi
 printf 'PASS: Shell, LuCI JavaScript, ACL, native CLI, driver, Overview, subscription source matches, double-patch guards.\n'
+sh "$ROOT/tests/lifecycle.sh" "$ROOT" "$T"

@@ -1,0 +1,81 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Proxy node"
+msgstr "代理节点"
+
+msgid "Selection unavailable"
+msgstr "暂不可选择"
+
+msgid "Mihomo status is unavailable. Check the LuCI connection."
+msgstr "无法获取 Mihomo 状态，请检查 LuCI 连接。"
+
+msgid "Choose a Mihomo profile to select a proxy node."
+msgstr "请先选择一个 Mihomo 配置，再选择代理节点。"
+
+msgid "Node selection is available only for Mihomo profiles."
+msgstr "只有 Mihomo 配置支持节点选择。"
+
+msgid "Start the VPN to connect to the Mihomo controller."
+msgstr "请启动 VPN 以连接 Mihomo 控制接口。"
+
+msgid "This Mihomo profile has no manual proxy groups."
+msgstr "此 Mihomo 配置没有可手动选择的代理组。"
+
+msgid "Proxy group"
+msgstr "代理组"
+
+msgid "Current node: %s"
+msgstr "当前节点：%s"
+
+msgid "No available nodes"
+msgstr "没有可选节点"
+
+msgid "Proxy node switched"
+msgstr "代理节点已切换"
+
+msgid "Node changes take effect immediately and are saved for this profile. Traffic rules must use the selected group."
+msgstr "节点切换立即生效，并按配置保存。流量规则必须使用所选代理组。"
+
+msgid "Refresh node status"
+msgstr "刷新节点状态"
+
+msgid "Mihomo node selection"
+msgstr "Mihomo 节点选择"
+
+msgid "Detect (prefer full Mihomo YAML)"
+msgstr "自动识别（优先完整 Mihomo YAML）"
+
+msgid "Full Clash/Mihomo YAML (one profile for all nodes)"
+msgstr "完整 Clash/Mihomo YAML（一个配置包含全部节点）"
+
+msgid "Automatic detection prefers a single Mihomo YAML profile and falls back to individual links. Subscriptions using links continue to refresh in that format. The URL may contain your account token and is readable only by root."
+msgstr "自动识别优先使用单个 Mihomo YAML 配置，必要时改用单独的分享链接。使用分享链接的订阅会继续按原格式刷新。订阅链接可能包含账号令牌，仅 root 可以读取。"
+
+msgid "No active Mihomo profile."
+msgstr "当前未启用 Mihomo 配置。"
+
+msgid "Choose a proxy group and node."
+msgstr "请选择代理组和节点。"
+
+msgid "The group or node name is too long."
+msgstr "代理组或节点名称过长。"
+
+msgid "The Mihomo controller is unavailable."
+msgstr "Mihomo 控制接口不可用。"
+
+msgid "The node does not belong to the selected group."
+msgstr "节点不属于所选代理组。"
+
+msgid "Mihomo rejected the node change."
+msgstr "Mihomo 拒绝了节点切换。"
+
+msgid "The node switched, but the selection could not be saved."
+msgstr "节点已切换，但无法保存选择。"
+
+msgid "The request is too large."
+msgstr "请求过大。"
+
+msgid "Unknown operation."
+msgstr "未知操作。"

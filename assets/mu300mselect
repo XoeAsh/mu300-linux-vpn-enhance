@@ -8,7 +8,7 @@ case "${1:-}" in
   call)
     INPUT=$(head -c 4097)
     [ "$(printf '%s' "$INPUT" | wc -c)" -le 4096 ] || {
-        printf '{"ok":0,"error":"请求过大"}\n'; exit 0;
+        printf '{"ok":0,"error":"The request is too large."}\n'; exit 0;
     }
     case "${2:-}" in
       get) "$HELPER" get ;;
@@ -17,7 +17,7 @@ case "${1:-}" in
         name=$(printf '%s' "$INPUT" | jsonfilter -e '@.name' 2>/dev/null)
         "$HELPER" set "$group" "$name"
         ;;
-      *) printf '{"ok":0,"error":"未知操作"}\n' ;;
+      *) printf '{"ok":0,"error":"Unknown operation."}\n' ;;
     esac
     ;;
   *) exit 2 ;;

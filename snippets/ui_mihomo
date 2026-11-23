@@ -1,1 +1,1 @@
-            E('option', { 'value': 'mihomo' }, [ '完整 Clash/Mihomo YAML（一个配置含全部节点）' ]),
+            E('option', { 'value': 'mihomo' }, [ _('Full Clash/Mihomo YAML (one profile for all nodes)') ]),
