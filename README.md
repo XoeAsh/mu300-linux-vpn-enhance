@@ -1,10 +1,12 @@
 # mu300-linux-vpn-enhance
 
+<img width="607" height="386" alt="image" src="https://github.com/user-attachments/assets/879cf902-01f0-48b1-ba88-15be7fb3b4a5" />
+
+**简体中文** · [English](README.en.md) · [Türkçe](README.tr.md)
+
 为 MU300 / ZTE F50 的原版 LuCI VPN 页面添加完整配置订阅和节点选择。当前版本为 **0.2.1**，安装基线为原版 `mu300-vpn v2.0.4`。[mu300-linux](https://github.com/dikeckaan/mu300-linux) · [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn)
 
 ## 功能
-
-<img width="607" height="386" alt="image" src="https://github.com/user-attachments/assets/879cf902-01f0-48b1-ba88-15be7fb3b4a5" />
 
 - **完整配置订阅。** 支持 sing-box 1.14 JSON、Mihomo YAML 和分享链接。订阅刷新由原版管理，已记录的格式和刷新设置会沿用。
 - **本机节点选择。** 在 VPN 概览切换 Mihomo 的 `select` 组或 sing-box 的 `selector` 组，选择按配置和代理组保存。Mihomo 使用 Unix Socket，sing-box 使用带令牌的环回接口。
