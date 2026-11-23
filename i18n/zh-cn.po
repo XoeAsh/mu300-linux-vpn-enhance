@@ -17,8 +17,8 @@ msgstr "请先选择 Mihomo 或 sing-box 配置，再选择代理节点。"
 msgid "Node selection is available for Mihomo and sing-box profiles."
 msgstr "Mihomo 和 sing-box 配置支持节点选择。"
 
-msgid "Start the VPN with a profile that has manual proxy groups."
-msgstr "请使用含手动代理组的配置启动 VPN。"
+msgid "Start or restart the VPN to connect to the node controller."
+msgstr "请启动或重启 VPN，以连接节点控制接口。"
 
 msgid "This profile has no manual proxy groups."
 msgstr "此配置没有可手动选择的代理组。"

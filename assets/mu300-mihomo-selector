@@ -23,27 +23,41 @@ supported() {
     esac
 }
 
+has_sing_box_selector() {
+    jq -e 'any(.outbounds[]?; .type == "selector" and
+        (.tag | type == "string" and length > 0))' "$1" >/dev/null 2>&1
+}
+
+kernel_uuid() {
+    IFS= read -r uuid < /proc/sys/kernel/random/uuid || return 1
+    hex=$(printf '%s' "$uuid" | tr -d '-')
+    case "$hex" in ''|*[!0-9a-f]*) return 1 ;; esac
+    [ "${#hex}" -eq 32 ] || return 1
+    printf '%s' "$hex"
+}
+
 prepare_sing_box() (
     run=$1; profile=$2; pid=$3; bin=$4
-    jq -e 'any(.outbounds[]; .type == "selector" and (.tag | type == "string"))' \
-        "$run/config.json" >/dev/null 2>&1 || exit 1
+    has_sing_box_selector "$run/config.json" || exit 1
     umask 077
     tmp=$(mktemp -d "$run/.mu300-vpn-enhance-selector.XXXXXX") || exit 1
     trap 'rm -rf "$tmp"' EXIT
     trap 'exit 1' HUP INT TERM
     port=
     for attempt in 1 2 3 4; do
-        random=$(od -An -tu2 -N2 /dev/urandom | tr -d '[:space:]')
-        case "$random" in ''|*[!0-9]*) exit 1 ;; esac
-        port=$((49152 + random % 16384))
+        random=$(kernel_uuid) || { echo 'sing-box controller could not read kernel randomness' >&2; exit 1; }
+        port_seed=$(printf '%.4s' "$random")
+        port=$((49152 + 0x$port_seed % 16384))
         hex=$(printf '%04X' "$port")
         if ! awk -v suffix=":$hex" '$4 == "0A" && substr($2,length($2)-4) == suffix {found=1}
             END {exit !found}' /proc/net/tcp /proc/net/tcp6 2>/dev/null; then break; fi
         port=
     done
     [ -n "$port" ] || exit 1
-    od -An -tx1 -N32 /dev/urandom | tr -d '[:space:]' > "$tmp/token"
-    [ "$(wc -c < "$tmp/token")" -eq 64 ] || exit 1
+    first=$(kernel_uuid) && second=$(kernel_uuid) || {
+        echo 'sing-box controller could not read kernel randomness' >&2; exit 1;
+    }
+    printf '%s%s' "$first" "$second" > "$tmp/token" || exit 1
     if [ -r "$PREF" ] && jq -e 'type == "array"' "$PREF" >/dev/null 2>&1; then
         cp "$PREF" "$tmp/prefs" || exit 1
     else
@@ -146,13 +160,18 @@ case "${1:-}" in
   get)
     PROFILE=; PTYPE=
     identify || true
-    if supported &&
+    reason=
+    if [ "$PTYPE" = sing-box ] && supported &&
+       ! has_sing_box_selector "$STORE/profiles/$PROFILE/config.json"; then
+        reason=no-selector
+    fi
+    if [ -z "$reason" ] && supported &&
        data=$(proxies) && list=$(printf '%s\n' "$data" | groups); then
         printf '%s\n' "$list" | jq -c --arg p "$PROFILE" --arg t "$PTYPE" \
             '{ok:1,online:true,profile:$p,type:$t,groups:.}'
     else
-        jq -cn --arg p "$PROFILE" --arg t "$PTYPE" \
-          '{ok:1,online:false,profile:$p,type:$t,groups:[]}'
+        jq -cn --arg p "$PROFILE" --arg t "$PTYPE" --arg r "$reason" \
+          '{ok:1,online:false,profile:$p,type:$t,reason:$r,groups:[]}'
     fi
     ;;
   set)

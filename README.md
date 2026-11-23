@@ -16,7 +16,7 @@
 
 ### 1. 下载到电脑
 
-下载 `mu300-linux-vpn-enhance-0.2.1-test.2.tar.gz`，保存到 Windows 的 **下载** 文件夹。保留压缩包，稍后在设备上解压。[下载测试版](https://github.com/xoeash/mu300-linux-vpn-enhance/archive/refs/tags/v0.2.1-test.2.tar.gz)
+下载 `mu300-linux-vpn-enhance-0.2.1-test.3.tar.gz`，保存到 Windows 的 **下载** 文件夹。保留压缩包，稍后在设备上解压。[下载测试版](https://github.com/xoeash/mu300-linux-vpn-enhance/archive/refs/tags/v0.2.1-test.3.tar.gz)
 
 ### 2. 从 Windows 上传，再登录设备
 
@@ -24,7 +24,7 @@
 
 ```powershell
 Set-Location "$env:USERPROFILE\Downloads"
-scp -O ".\mu300-linux-vpn-enhance-0.2.1-test.2.tar.gz" root@192.168.77.1:/tmp/
+scp -O ".\mu300-linux-vpn-enhance-0.2.1-test.3.tar.gz" root@192.168.77.1:/tmp/
 ssh root@192.168.77.1
 ```
 
@@ -35,8 +35,8 @@ ssh root@192.168.77.1
 在刚打开的 SSH 终端复制下面整段。每一步成功才会继续下一步。
 
 ```sh
-tar -xzf /tmp/mu300-linux-vpn-enhance-0.2.1-test.2.tar.gz -C /tmp &&
-cd /tmp/mu300-linux-vpn-enhance-0.2.1-test.2 &&
+tar -xzf /tmp/mu300-linux-vpn-enhance-0.2.1-test.3.tar.gz -C /tmp &&
+cd /tmp/mu300-linux-vpn-enhance-0.2.1-test.3 &&
 sh install.sh &&
 sh audit.sh
 ```

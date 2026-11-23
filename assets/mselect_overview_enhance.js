@@ -34,8 +34,10 @@ function card(d, refresh) {
         unavailable(content, _('Choose a Mihomo or sing-box profile to select a proxy node.'));
     } else if (d.type !== 'mihomo' && d.type !== 'sing-box') {
         unavailable(content, _('Node selection is available for Mihomo and sing-box profiles.'));
+    } else if (d.reason === 'no-selector') {
+        unavailable(content, _('This profile has no manual proxy groups.'));
     } else if (!d.online) {
-        unavailable(content, _('Start the VPN with a profile that has manual proxy groups.'));
+        unavailable(content, _('Start or restart the VPN to connect to the node controller.'));
     } else if (!Array.isArray(d.groups) || !d.groups.length) {
         unavailable(content, _('This profile has no manual proxy groups.'));
     } else {

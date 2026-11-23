@@ -17,8 +17,8 @@ msgstr "Proxy düğümü seçmek için bir Mihomo veya sing-box profili seçin."
 msgid "Node selection is available for Mihomo and sing-box profiles."
 msgstr "Düğüm seçimi Mihomo ve sing-box profillerinde kullanılabilir."
 
-msgid "Start the VPN with a profile that has manual proxy groups."
-msgstr "VPN'i elle seçim yapılabilen proxy grupları içeren bir profille başlatın."
+msgid "Start or restart the VPN to connect to the node controller."
+msgstr "Düğüm denetleyicisine bağlanmak için VPN'i başlatın veya yeniden başlatın."
 
 msgid "This profile has no manual proxy groups."
 msgstr "Bu profilde elle seçim yapılabilen proxy grubu yok."

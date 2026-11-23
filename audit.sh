@@ -25,6 +25,6 @@ if command -v mu300-vpn >/dev/null 2>&1; then
 fi
 if command -v ubus >/dev/null 2>&1; then
     ubus call mu300mselect get '{}' 2>/dev/null |
-        jq -c '{ok,online,profile,type,groups: (.groups|length)}' || true
+        jq -c '{ok,online,type,reason,groups: (.groups|length)}' || true
 fi
 [ ! -s "$STATE/installed.sha256" ] || sha256sum -c "$STATE/installed.sha256" 2>/dev/null

@@ -114,4 +114,5 @@ if command -v node >/dev/null 2>&1; then
     node "$ROOT/tests/i18n.js" "$ROOT" "$T/sub.patched.js" || fail 'LuCI locales'
 fi
 printf 'PASS: Shell, LuCI JavaScript, ACL, native CLI, driver, Overview, subscription source matches, double-patch guards.\n'
+sh "$ROOT/tests/controller.sh" "$ROOT" "$T"
 sh "$ROOT/tests/lifecycle.sh" "$ROOT" "$T"

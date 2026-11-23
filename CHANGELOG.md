@@ -7,3 +7,4 @@
 - Switch sing-box selector nodes from the LuCI Overview and remember the choice per profile.
 - Keep the built-in English, Simplified Chinese, and Turkish interface.
 - Use the original subscription manager's refresh behavior and remove enhancement-owned files on uninstall.
+- Start the sing-box controller on OpenWrt systems without od and report when the active profile has no manual selector.
