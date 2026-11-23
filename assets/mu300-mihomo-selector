@@ -1,0 +1,104 @@
+#!/bin/sh
+# MU300: controller bridge for whichever Mihomo YAML profile is active.
+# The Unix socket is located under /run/mu300-vpn (root-only).
+set -u
+SOCK=/run/mu300-vpn/mihomo-control.sock
+STORE=/etc/mu300/vpn
+PREF=/etc/mu300/mihomo-selector-selections.json
+
+error() { jq -cn --arg e "$1" '{ok:0,error:$e}'; exit 0; }
+identify() {
+    PROFILE=$(cat "$STORE/active" 2>/dev/null) || PROFILE=
+    PTYPE=
+    case "$PROFILE" in ''|*[!a-z0-9-]*) PROFILE=; return 1 ;; esac
+    [ -r "$STORE/profiles/$PROFILE/meta" ] || return 1
+    PTYPE=$(sed -n "s/^TYPE='\([^']*\)'$/\1/p" "$STORE/profiles/$PROFILE/meta" | head -n 1)
+    [ -n "$PTYPE" ]
+}
+active() {
+    identify && [ "$PTYPE" = mihomo ] && [ -r "$STORE/profiles/$PROFILE/config.yaml" ]
+}
+proxies() {
+    [ -S "$SOCK" ] || return 1
+    curl -fsS --max-time 4 --unix-socket "$SOCK" http://localhost/proxies 2>/dev/null
+}
+groups() {
+    jq -c '
+       if (.proxies|type) != "object" then error("no proxies")
+       else [.proxies | to_entries[] |
+           select(.value.type == "Selector" and (.value.all|type)=="array") |
+           {name:.key,selected:(.value.now//""),
+            nodes:[.value.all[]|select(type=="string")]}] | sort_by(.name)
+       end'
+}
+member() {
+    printf '%s\n' "$1" | jq -e --arg g "$2" --arg n "$3" \
+       'any(.[]; .name==$g and (.nodes|index($n))!=null)' >/dev/null 2>&1
+}
+switch_one() {
+    group=$1; node=$2
+    enc=$(jq -rn --arg v "$group" '$v|@uri') || return 1
+    payload=$(jq -cn --arg n "$node" '{name:$n}') || return 1
+    code=$(curl -sS --max-time 5 --unix-socket "$SOCK" -X PUT \
+        -H 'Content-Type: application/json' --data "$payload" \
+        -o /dev/null -w '%{http_code}' "http://localhost/proxies/$enc" 2>/dev/null) || return 1
+    [ "$code" = 204 ] || [ "$code" = 200 ]
+}
+save_selection() {
+    (umask 077
+     { [ ! -r "$PREF" ] || cat "$PREF"; [ -r "$PREF" ] || printf '[]\n'; } |
+     jq -c --arg p "$PROFILE" --arg g "$1" --arg n "$2" '
+         (if type=="array" then . else [] end) |
+         map(select(.profile!=$p or .group!=$g)) +
+         [{profile:$p,group:$g,node:$n}]' > "$PREF.new.$$") || return 1
+    chmod 600 "$PREF.new.$$" && mv -f "$PREF.new.$$" "$PREF"
+}
+case "${1:-}" in
+  get)
+    PROFILE=; PTYPE=
+    identify || true
+    if [ "$PTYPE" = mihomo ] && [ -r "$STORE/profiles/$PROFILE/config.yaml" ] &&
+       data=$(proxies) && list=$(printf '%s\n' "$data" | groups); then
+        printf '%s\n' "$list" | jq -c --arg p "$PROFILE" \
+            '{ok:1,online:true,profile:$p,type:"mihomo",groups:.}'
+    else
+        jq -cn --arg p "$PROFILE" --arg t "$PTYPE" \
+          '{ok:1,online:false,profile:$p,type:$t,groups:[]}'
+    fi
+    ;;
+  set)
+    active || error '当前配置不是 Mihomo YAML'
+    group=${2:-}; node=${3:-}
+    [ -n "$group" ] && [ -n "$node" ] || error '请选择代理组和节点'
+    [ "$(printf '%s' "$group" | wc -c)" -le 256 ] && \
+    [ "$(printf '%s' "$node" | wc -c)" -le 256 ] || error '节点或组名称过长'
+    data=$(proxies) && list=$(printf '%s\n' "$data" | groups) || error 'Mihomo 控制接口未连接'
+    member "$list" "$group" "$node" || error '所选节点不属于该策略组'
+    switch_one "$group" "$node" || error 'Mihomo 拒绝了节点切换'
+    save_selection "$group" "$node" || error '已切换，但无法保存重启后的选择'
+    printf '{"ok":1}\n'
+    ;;
+  restore)
+    # Called by the Mihomo driver only during a profile start.
+    active || exit 0
+    data=
+    n=0
+    while [ "$n" -lt 6 ]; do
+        if data=$(proxies) && list=$(printf '%s\n' "$data" | groups); then break; fi
+        n=$((n+1)); sleep 1
+    done
+    [ -n "$data" ] || exit 0
+    [ -r "$PREF" ] || exit 0
+    jq -cr --arg p "$PROFILE" '
+       if type=="array" then .[] | select(.profile==$p) | [.group,.node] | @base64
+       else empty end' "$PREF" 2>/dev/null |
+    while IFS= read -r record; do
+        group=$(printf '%s' "$record" | base64 -d 2>/dev/null | jq -r '.[0]') || continue
+        node=$(printf '%s' "$record" | base64 -d 2>/dev/null | jq -r '.[1]') || continue
+        if member "$list" "$group" "$node"; then
+            switch_one "$group" "$node" || true
+        fi
+    done
+    ;;
+  *) echo 'usage: selector get | set GROUP NODE | restore' >&2; exit 2 ;;
+esac

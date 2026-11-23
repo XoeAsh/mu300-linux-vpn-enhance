@@ -1,0 +1,1 @@
+            E('option', { 'value': 'auto' }, [ '自动识别（优先完整 Mihomo YAML）' ]),

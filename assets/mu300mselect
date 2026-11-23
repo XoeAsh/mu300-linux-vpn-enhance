@@ -1,0 +1,24 @@
+#!/bin/sh
+# LuCI RPC bridge. Group/node names are checked against the local Mihomo API.
+HELPER=/usr/libexec/mu300-mihomo-selector
+case "${1:-}" in
+  list)
+    printf '%s\n' '{"get":{},"set":{"group":"String","name":"String"}}'
+    ;;
+  call)
+    INPUT=$(head -c 4097)
+    [ "$(printf '%s' "$INPUT" | wc -c)" -le 4096 ] || {
+        printf '{"ok":0,"error":"请求过大"}\n'; exit 0;
+    }
+    case "${2:-}" in
+      get) "$HELPER" get ;;
+      set)
+        group=$(printf '%s' "$INPUT" | jsonfilter -e '@.group' 2>/dev/null)
+        name=$(printf '%s' "$INPUT" | jsonfilter -e '@.name' 2>/dev/null)
+        "$HELPER" set "$group" "$name"
+        ;;
+      *) printf '{"ok":0,"error":"未知操作"}\n' ;;
+    esac
+    ;;
+  *) exit 2 ;;
+esac

@@ -1,0 +1,5 @@
+            # Do not restart a live Mihomo tunnel for an identical subscription YAML.
+            if [ "$_ot" = mihomo ] && [ -r "$PROFILES/$_hit/config.yaml" ] &&
+               cmp -s "$3" "$PROFILES/$_hit/config.yaml"; then
+                sub_mark "$_sid" "$_hit"; _keep="$_keep $_hit"
+            elif ( profile_edit "$_hit" "$3" ) >/dev/null 2>&1; then

@@ -1,0 +1,19 @@
+{
+  "luci-app-mu300-mihomo-select": {
+    "description": "Mihomo selector (native subscriptions own automatic refresh)",
+    "read": {
+      "ubus": {
+        "mu300mselect": [
+          "get"
+        ]
+      }
+    },
+    "write": {
+      "ubus": {
+        "mu300mselect": [
+          "set"
+        ]
+      }
+    }
+  }
+}

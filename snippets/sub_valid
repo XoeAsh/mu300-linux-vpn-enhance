@@ -1,0 +1,7 @@
+        mihomo)
+            _put "$_sname" mihomo "$_file"
+            # Failed import/check must not be reported as a successful native subscription.
+            if [ "$_skipped" -ne 0 ]; then
+                echo "mihomo YAML import/check failed; existing profiles preserved" >&2
+                return 1
+            fi ;;
