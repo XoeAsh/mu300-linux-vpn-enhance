@@ -1,6 +1,6 @@
 # mu300-linux-vpn-enhance
 
-<img width="607" height="386" alt="image" src="https://github.com/user-attachments/assets/879cf902-01f0-48b1-ba88-15be7fb3b4a5" />
+<img width="426" height="256" alt="sc_zh" src="https://github.com/user-attachments/assets/cf0cbb02-0429-49a5-bb1b-2e9e7140578d" />
 
 **简体中文** · [English](README.en.md) · [Türkçe](README.tr.md)
 
