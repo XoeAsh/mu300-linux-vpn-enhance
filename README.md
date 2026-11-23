@@ -8,6 +8,19 @@
 - **本机节点选择。** 在 VPN 概览切换 Mihomo 的 `select` 组或 sing-box 的 `selector` 组，选择按配置和代理组保存。Mihomo 使用 Unix Socket，sing-box 使用带令牌的环回接口。
 - **三语界面。** 跟随 LuCI 的简体中文、英语和土耳其语设置，其他语言使用英文文案。
 
+## 版本与验证环境
+
+| 项目 | 基线或验证版本 |
+| --- | --- |
+| 设备和界面 | MU300 / ZTE F50，原版 mu300-linux LuCI |
+| VPN 模块 | mu300-vpn v2.0.4 |
+| Mihomo | v1.19.32 |
+| sing-box | v1.14.1 |
+
+表中引擎版本是 `mu300-vpn v2.0.4` 的上游构建版本。本增强包使用设备上由原版管理的引擎。在 SSH 中运行 `mu300-vpn engines --json` 可查看设备的实际安装情况。
+
+sing-box 的导入、连接和节点选择已在 F50 上验证。Mihomo 的 Unix Socket 节点读取、切换和重启恢复在 Linux x86_64 上用 v1.19.32 验证，F50 的 Mihomo 路径待实测。
+
 ## 安装
 
 以下步骤使用 Windows PowerShell。先通过 USB 或局域网连接设备，准备好 root 登录方式。如果管理地址不同，把命令中的 `192.168.77.1` 换成设备的实际地址。重新安装前，使用已有增强包自带的卸载脚本。
