@@ -4,6 +4,8 @@
 
 ## 功能
 
+<img width="607" height="386" alt="image" src="https://github.com/user-attachments/assets/879cf902-01f0-48b1-ba88-15be7fb3b4a5" />
+
 - **完整配置订阅。** 支持 sing-box 1.14 JSON、Mihomo YAML 和分享链接。订阅刷新由原版管理，已记录的格式和刷新设置会沿用。
 - **本机节点选择。** 在 VPN 概览切换 Mihomo 的 `select` 组或 sing-box 的 `selector` 组，选择按配置和代理组保存。Mihomo 使用 Unix Socket，sing-box 使用带令牌的环回接口。
 - **三语界面。** 跟随 LuCI 的简体中文、英语和土耳其语设置，其他语言使用英文文案。
