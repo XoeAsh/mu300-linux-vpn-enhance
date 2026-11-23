@@ -1,6 +1,6 @@
-# mu300-linux-vpn-mihomo-enhance
+# mu300-linux-vpn-enhance
 
-面向 [dikeckaan/mu300-linux](https://github.com/dikeckaan/mu300-linux) / [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn) 的独立增强层，整合历史 v1–v6 补丁，以 **v6 精简 Overview** 为最终交互形态。
+面向 [dikeckaan/mu300-linux](https://github.com/dikeckaan/mu300-linux) / [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn) 的功能补丁。
 
 > 适用对象：MU300 / ZTE F50 上使用 `mu300-vpn` 的 LuCI 管理系统。基于已经验证过的 MU300 VPN 2.0.4 系列源码锚点。上游更新后若源码结构不符，安装程序会拒绝盲目替换；并非适用于所有 OpenWrt 固件。
 
