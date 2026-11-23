@@ -1,55 +1,57 @@
 # mu300-linux-vpn-enhance
 
-面向 MU300 / ZTE F50 的功能补丁，提供 Mihomo 和 sing-box 节点控制。需要原版 [mu300-linux](https://github.com/dikeckaan/mu300-linux) 的 LuCI VPN 页面和 [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn) 模块。安装器以 VPN 模块 2.0.4 的源码结构为基准，检测到不兼容的页面或脚本时会在修改系统文件前退出。
+为 MU300 / ZTE F50 的原版 LuCI VPN 页面添加完整配置订阅和节点选择。当前版本为 **0.2.1**，安装基线为原版 `mu300-vpn v2.0.4`。[mu300-linux](https://github.com/dikeckaan/mu300-linux) · [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn)
 
 ## 功能
 
-- **节点选择**。在 VPN 概览选择 Mihomo 的 `select` 组或 sing-box 的 `selector` 组。切换立即生效，选择按配置和代理组保存。
-- **原生订阅**。新建自动订阅依次尝试 sing-box JSON、Mihomo YAML 和普通分享链接。您也可以指定完整 JSON 或 YAML。已有订阅按已记录的格式刷新，内容相同的完整配置跳过重启。
-- **刷新入口**。订阅的手动刷新和自动刷新均由原版订阅管理负责，沿用各条订阅的刷新设置。
-- **本地控制**。Mihomo 使用 Unix Socket。sing-box 的控制接口绑定本机环回地址，并使用每次启动生成的令牌。LuCI RPC 提供读取状态和切换节点。
-- **三语界面**。新增界面随 LuCI 的语言设置使用简体中文、英语或土耳其语。其他语言下，新增文案使用英语。原版界面继续使用系统翻译。
+- **完整配置订阅。** 支持 sing-box 1.14 JSON、Mihomo YAML 和分享链接。订阅刷新由原版管理，已记录的格式和刷新设置会沿用。
+- **本机节点选择。** 在 VPN 概览切换 Mihomo 的 `select` 组或 sing-box 的 `selector` 组，选择按配置和代理组保存。Mihomo 使用 Unix Socket，sing-box 使用带令牌的环回接口。
+- **三语界面。** 跟随 LuCI 的简体中文、英语和土耳其语设置，其他语言使用英文文案。
 
-## 安装测试版
+## 安装
 
-以下步骤以 Windows PowerShell、设备地址 `192.168.77.1` 和原版 VPN 模块 `v2.0.4` 为例。电脑应能通过 USB 或局域网访问设备。若设备地址不同，把两条连接命令中的地址替换为实际地址。若设备上已有增强包，先运行该安装自带的卸载脚本。
+以下步骤使用 Windows PowerShell。先通过 USB 或局域网连接设备，准备好 root 登录方式。如果管理地址不同，把命令中的 `192.168.77.1` 换成设备的实际地址。重新安装前，使用已有增强包自带的卸载脚本。
 
 ### 1. 下载到电脑
 
-下载 `mu300-linux-vpn-enhance-0.2.1-test.3.tar.gz`，保存到 Windows 的 **下载** 文件夹。保留压缩包，稍后在设备上解压。[下载测试版](https://github.com/xoeash/mu300-linux-vpn-enhance/archive/refs/tags/v0.2.1-test.3.tar.gz)
+下载 `mu300-linux-vpn-enhance-0.2.1.tar.gz`，保存到 Windows 的 **下载** 文件夹。保留压缩包，稍后在设备上解压。[下载 v0.2.1](https://github.com/xoeash/mu300-linux-vpn-enhance/archive/refs/tags/v0.2.1.tar.gz) · [发布页面](https://github.com/xoeash/mu300-linux-vpn-enhance/releases/tag/v0.2.1)
 
 ### 2. 从 Windows 上传，再登录设备
 
-打开 **PowerShell**，逐行执行。前两行进入下载目录并把文件复制到设备的 `/tmp`。复制完成后，第三行打开设备的 SSH 终端。
+打开 **PowerShell**，逐行执行。等 `scp` 上传完成后，再执行 `ssh` 登录。
 
 ```powershell
 Set-Location "$env:USERPROFILE\Downloads"
-scp -O ".\mu300-linux-vpn-enhance-0.2.1-test.3.tar.gz" root@192.168.77.1:/tmp/
+scp -O ".\mu300-linux-vpn-enhance-0.2.1.tar.gz" root@192.168.77.1:/tmp/
 ssh root@192.168.77.1
 ```
 
-出现密码提示时输入设备的 root 密码。输入过程没有字符回显，输完按 Enter 即可。登录成功后会看到类似 `root@mu300:~#` 的提示符。若遇到 SSH 主机密钥提示，先通过可信的设备终端核对指纹，再接受新密钥。
+出现密码提示时输入设备的 root 密码，输入过程没有字符回显。若出现 SSH 主机密钥提示，先通过可信的设备终端核对指纹。登录后会看到类似 `root@mu300:~#` 的提示符。
 
 ### 3. 在设备端解压和安装
 
 在刚打开的 SSH 终端复制下面整段。每一步成功才会继续下一步。
 
 ```sh
-tar -xzf /tmp/mu300-linux-vpn-enhance-0.2.1-test.3.tar.gz -C /tmp &&
-cd /tmp/mu300-linux-vpn-enhance-0.2.1-test.3 &&
+tar -xzf /tmp/mu300-linux-vpn-enhance-0.2.1.tar.gz -C /tmp &&
+cd /tmp/mu300-linux-vpn-enhance-0.2.1 &&
 sh install.sh &&
 sh audit.sh
 ```
 
-看到 `Installed version: 0.2.1` 后，重新打开 LuCI 的 VPN 页面。安装会重载 LuCI 的管理服务，节点控制接口在 VPN 下次启动时生效。
+看到 `Installed version: 0.2.1` 后，在浏览器重新打开 LuCI 的 VPN 页面。节点控制接口会在 VPN 下次启动时生效。安装器会先检查原版文件结构，遇到不兼容的版本会在修改系统文件前退出。
 
-## 测试订阅和节点选择
+## 使用
 
-1. 在 **VPN → 订阅** 新建一条自动订阅。若服务商提供直出 sing-box 1.14 JSON 的链接，可选 **完整 sing-box JSON** 来单独测试。
-2. 导入成功后查看格式和配置数。完整 sing-box JSON 应导入为一条配置，包含供应商文件中的节点和策略组。服务端根据链接或客户端标识决定返回哪种格式。
-3. 在方便切换 VPN 时启用这条配置，打开 **VPN → 概览**，在 **代理节点选择** 里切换一个 `selector` 组的节点。再次启动该配置后可核对保存的节点。
+### 订阅
 
-已通过文件导入的 sing-box 1.14 JSON 也可以直接用于测试节点选择。
+在 **VPN → 订阅 → 添加** 输入订阅链接。新建的 **自动识别** 依次尝试 sing-box JSON、Mihomo YAML 和分享链接，实际格式取决于服务商返回的内容。已有订阅继续按已识别的格式刷新。如需为现有分享链接订阅尝试完整配置，请新建一条订阅。
+
+如果服务商提供对应格式的专用链接，可直接选 **完整 sing-box JSON** 或 **完整 Clash/Mihomo YAML**。完整文件导入成一条 VPN 配置，保留其中的节点和策略组。
+
+### 节点选择
+
+启用目标配置后，在 **VPN → 概览 → 代理节点选择** 选择手动组和节点。通过文件导入的完整配置也适用。若面板提示没有手动代理组，请检查 Mihomo 配置是否含 `select` 组，或 sing-box 配置是否含 `selector` 组。
 
 在 LuCI 的 **系统 → 系统 → 语言和样式** 选择语言，保存设置并重新打开 VPN 概览。节点名和代理组名来自配置，按原名称显示。
 
