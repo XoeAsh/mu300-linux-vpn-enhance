@@ -4,7 +4,7 @@ set -u
 RUN=/run/mu300-vpn
 SOCK=$RUN/mihomo-control.sock
 STORE=/etc/mu300/vpn
-PREF=/etc/mu300/mihomo-selector-selections.json
+PREF=/root/.mu300-linux-vpn-enhance/selections.json
 
 error() { jq -cn --arg e "$1" '{ok:0,error:$e}'; exit 0; }
 identify() {
@@ -28,7 +28,7 @@ prepare_sing_box() (
     jq -e 'any(.outbounds[]; .type == "selector" and (.tag | type == "string"))' \
         "$run/config.json" >/dev/null 2>&1 || exit 1
     umask 077
-    tmp=$(mktemp -d "$run/.selector.XXXXXX") || exit 1
+    tmp=$(mktemp -d "$run/.mu300-vpn-enhance-selector.XXXXXX") || exit 1
     trap 'rm -rf "$tmp"' EXIT
     trap 'exit 1' HUP INT TERM
     port=
@@ -191,6 +191,13 @@ case "${1:-}" in
   prepare-sing-box)
     [ "$#" -eq 5 ] || exit 2
     prepare_sing_box "$2" "$3" "$4" "$5"
+    ;;
+  in-use)
+    PTYPE=mihomo
+    if request /proxies -fsS --max-time 2 >/dev/null 2>&1; then exit 0; fi
+    [ -r "$RUN/sing-box-selector-owner" ] || exit 1
+    IFS=' ' read -r PROFILE _pid < "$RUN/sing-box-selector-owner" || exit 1
+    sing_box_controller
     ;;
   *) echo 'usage: selector get | set GROUP NODE | restore' >&2; exit 2 ;;
 esac

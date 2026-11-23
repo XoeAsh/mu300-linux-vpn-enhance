@@ -1,52 +1,67 @@
 #!/bin/sh
-# Restore exact pre-install executable/UI files; leave profiles and subscriptions intact.
+# Remove the enhancement and restore the originals it replaced.
 set -eu
 [ "$(id -u)" = 0 ] || { echo '请使用 root 执行' >&2; exit 1; }
-BACK=/root/mu300-linux-vpn-enhance-backup
-missing_backup() { echo "找不到可用于回滚的备份：$BACK" >&2; exit 1; }
-[ -s "$BACK/manifest" ] && [ -f "$BACK/rollback-ready" ] || missing_backup
-if [ -r "$BACK/installing-pid" ]; then
-    pid=$(cat "$BACK/installing-pid")
-    case $pid in
+[ "$#" -eq 0 ] || { echo '用法为 sh uninstall.sh' >&2; exit 2; }
+STATE=/root/.mu300-linux-vpn-enhance
+RUN=/run/mu300-vpn
+SELECTOR=/usr/libexec/mu300-mihomo-selector
+
+[ -d "$STATE" ] || { echo '增强包已卸载。'; exit 0; }
+[ ! -L "$STATE" ] || { echo "卸载路径为符号链接，已保留 $STATE" >&2; exit 1; }
+[ -f "$STATE/uninstall-ready" ] && [ -r "$STATE/installed.sha256" ] &&
+    [ -r "$STATE/originals" ] || { echo "卸载记录不完整，已保留 $STATE" >&2; exit 1; }
+if [ -r "$STATE/installing-pid" ]; then
+    pid=$(cat "$STATE/installing-pid")
+    case "$pid" in
         ''|0|*[!0-9]*) ;;
         *) if kill -0 "$pid" 2>/dev/null; then
-               echo '安装仍在运行，请等安装结束后再回滚。' >&2; exit 1
+               echo '安装仍在运行，请等安装结束后再卸载。' >&2; exit 1
            fi ;;
     esac
 fi
-if [ -r "$BACK/installed-version" ] && [ ! -e "$BACK/rollback-in-progress" ] &&
-   [ "${1:-}" != '--force' ]; then
-    sha256sum -c "$BACK/installed.sha256" >/dev/null || {
-        echo '增强包管理的文件在安装后发生过变化。为避免覆盖其他修改，已拒绝回滚。' >&2
-        echo '请核对差异后，确需覆盖时使用 sh uninstall.sh --force' >&2; exit 1; }
+
+# Validate every managed path before restoring or removing any of them.
+while IFS= read -r file; do
+    [ -f "$STATE/files$file" ] || { echo "缺少原版文件备份 $file" >&2; exit 1; }
+done < "$STATE/originals"
+while read -r sum file; do
+    if [ ! -e "$file" ] && [ ! -L "$file" ]; then continue; fi
+    if [ -f "$file" ] && [ ! -L "$file" ]; then
+        if [ -f "$STATE/files$file" ] && cmp -s "$file" "$STATE/files$file"; then continue; fi
+        if printf '%s  %s\n' "$sum" "$file" | sha256sum -c >/dev/null 2>&1; then continue; fi
+    fi
+    echo "文件 $file 在安装后有其它修改。为保护当前文件，已停止卸载。" >&2
+    exit 1
+done < "$STATE/installed.sha256"
+
+if [ -x "$SELECTOR" ] && "$SELECTOR" in-use >/dev/null 2>&1; then
+    echo '代理节点控制仍在运行。请在 LuCI 中停止 VPN，再执行同一条卸载命令。' >&2
+    exit 1
 fi
-while IFS= read -r f; do
-    [ -f "$BACK/files$f" ] || { echo "备份缺少文件：$f" >&2; exit 1; }
-done < "$BACK/manifest"
-: > "$BACK/rollback-in-progress"
-while IFS= read -r f; do
-    mkdir -p "${f%/*}"
-    tmp="$f.uninstall.$$"
-    cp -p "$BACK/files$f" "$tmp" && mv -f "$tmp" "$f"
-done < "$BACK/manifest"
-# Remove managed files that did not exist before installation.
-for f in /www/luci-static/resources/view/mu300/vpn-overview-enhance.js \
-         /www/luci-static/resources/view/mu300/vpn-subscriptions-enhance.js \
-         /www/luci-static/resources/mu300/mselect_overview_enhance.js \
-         /usr/lib/lua/luci/i18n/mu300-vpn-enhance.zh-cn.lmo \
-         /usr/lib/lua/luci/i18n/mu300-vpn-enhance.tr.lmo \
-         /usr/libexec/mu300-mihomo-selector /usr/libexec/rpcd/mu300mselect \
-         /etc/crontabs/root \
-         /usr/share/rpcd/acl.d/luci-app-mu300-mihomo-select.json; do
-    grep -Fxq "$f" "$BACK/manifest" || rm -f "$f"
-done
+
+: > "$STATE/uninstall-in-progress"
+tmp=
+trap '[ -z "$tmp" ] || rm -f "$tmp"' EXIT
+trap 'exit 1' HUP INT TERM
+restore_file() {
+    tmp=$(mktemp "$2.uninstall.XXXXXX")
+    cp -p "$1" "$tmp" && mv -f "$tmp" "$2" || return 1
+    tmp=
+}
+
+while read -r sum file; do
+    if [ -f "$STATE/files$file" ]; then
+        restore_file "$STATE/files$file" "$file"
+    else
+        rm -f "$file"
+    fi
+done < "$STATE/installed.sha256"
+rm -f "$RUN/mihomo-control.sock" "$RUN/sing-box-controlled.json" "$RUN/sing-box-selector-owner"
+rm -rf "$RUN"/.mu300-vpn-enhance-selector.*
 rm -f /tmp/luci-indexcache* /var/luci-indexcache* 2>/dev/null || true
 rm -rf /tmp/luci-modulecache /var/luci-modulecache 2>/dev/null || true
-[ ! -x /etc/init.d/cron ] || /etc/init.d/cron restart
 [ ! -x /etc/init.d/rpcd ] || /etc/init.d/rpcd restart
 [ ! -x /etc/init.d/uhttpd ] || /etc/init.d/uhttpd restart
-ARCHIVE="$BACK.uninstalled.$(date +%s).$$"
-mv "$BACK" "$ARCHIVE"
-echo '已还原安装前的 CLI、VPN 驱动、LuCI 和 RPC 文件。'
-echo '订阅、配置文件、节点选择和网络设置已保留。'
-echo "历史备份保留：$ARCHIVE"
+rm -rf "$STATE"
+echo '增强包已完全卸载。原版 VPN 和 LuCI 文件、配置及订阅均已保留。'
