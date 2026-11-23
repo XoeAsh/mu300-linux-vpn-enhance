@@ -1,6 +1,6 @@
 # mu300-linux-vpn-enhance
 
-<img width="607" height="386" alt="Screenshot of the LuCI VPN interface" src="https://github.com/user-attachments/assets/879cf902-01f0-48b1-ba88-15be7fb3b4a5" />
+<img width="426" height="273" alt="sc_en" src="https://github.com/user-attachments/assets/52cf2a93-5d5f-4962-a35b-b3f7ec3c756f" />
 
 [简体中文](README.md) · **English** · [Türkçe](README.tr.md)
 
