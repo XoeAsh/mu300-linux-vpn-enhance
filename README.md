@@ -4,19 +4,19 @@
 
 **简体中文** · [English](README.en.md) · [Türkçe](README.tr.md)
 
-为 MU300 / ZTE F50 的原版 LuCI VPN 页面添加完整配置订阅和节点选择。当前版本为 **0.2.1**，安装基线为原版 `mu300-vpn v2.0.4`。[mu300-linux](https://github.com/dikeckaan/mu300-linux) · [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn)
+为 MU300 的 VPN 模组添加多节点配置订阅和节点选择功能。当前版本为 **0.2.1**，安装基线为原版 `mu300-vpn v2.0.4`。[mu300-linux](https://github.com/dikeckaan/mu300-linux) · [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn)
 
 ## 功能
 
-- **完整配置订阅。** 支持 sing-box 1.14 JSON、Mihomo YAML 和分享链接。订阅刷新由原版管理，已记录的格式和刷新设置会沿用。
-- **本机节点选择。** 在 VPN 概览切换 Mihomo 的 `select` 组或 sing-box 的 `selector` 组，选择按配置和代理组保存。Mihomo 使用 Unix Socket，sing-box 使用带令牌的环回接口。
-- **三语界面。** 跟随 LuCI 的简体中文、英语和土耳其语设置，其他语言使用英文文案。
+- **多节点配置订阅：** 支持包含多节点的 sing-box 1.14 JSON、Mihomo YAML 的订阅链接识别。订阅刷新由原版管理，已记录的格式和刷新设置会沿用。
+- **本机节点选择：** 在 VPN 概览页面添加控制块，支持切换 Mihomo 的 `select` 组或 sing-box 的 `selector` 组，选择按配置和代理组保存。Mihomo 使用 Unix Socket，sing-box 使用带令牌的环回接口。
+- **三语界面：** 跟随 LuCI 的简体中文、英语和土耳其语设置，其他语言使用英文文案。
 
 ## 版本与验证环境
 
 | 项目 | 基线或验证版本 |
 | --- | --- |
-| 设备和界面 | MU300 / ZTE F50，原版 mu300-linux LuCI |
+| 设备和界面 | ZTE F50，OpenWrt mu300-linux 搭配 MU300 控制面板 |
 | VPN 模块 | mu300-vpn v2.0.4 |
 | Mihomo | v1.19.32 |
 | sing-box | v1.14.1 |
