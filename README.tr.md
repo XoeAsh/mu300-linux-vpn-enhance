@@ -6,19 +6,19 @@
 
 > Bu belge ChatGPT tarafından çevrilmiştir. Çeviri gözden geçirilmemiştir.
 
-MU300 / ZTE F50 cihazlarının orijinal LuCI VPN sayfalarına tam yapılandırma abonelikleri ve düğüm seçimi ekler. **0.2.1** sürümü, orijinal `mu300-vpn v2.0.4` sürümünü temel alır. [mu300-linux](https://github.com/dikeckaan/mu300-linux) · [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn)
+MU300 VPN modülüne birden çok düğüm içeren yapılandırmalar için abonelik ve düğüm seçimi ekler. **0.2.1** sürümü, orijinal `mu300-vpn v2.0.4` sürümünü temel alır. [mu300-linux](https://github.com/dikeckaan/mu300-linux) · [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn)
 
 ## Özellikler
 
-- **Tam yapılandırma abonelikleri.** sing-box 1.14 JSON, Mihomo YAML ve paylaşım bağlantılarını destekler. Orijinal abonelik yöneticisi, kayıtlı biçimi ve yenileme ayarlarını kullanarak abonelikleri yeniler.
-- **Yerel düğüm seçimi.** VPN Genel Bakış sayfasında Mihomo `select` grupları veya sing-box `selector` grupları içinde düğüm değiştirebilirsiniz. Seçimler profil ve proxy grubu bazında kaydedilir. Mihomo bir Unix soketi, sing-box ise belirteçle korunan bir geri döngü arayüzü kullanır.
+- **Çok düğümlü yapılandırma abonelikleri.** Birden çok düğüm içeren sing-box 1.14 JSON veya Mihomo YAML yapılandırmaları sunan abonelik bağlantılarını tanır. Orijinal abonelik yöneticisi, kayıtlı biçimi ve yenileme ayarlarını kullanarak abonelikleri yeniler.
+- **Yerel düğüm seçimi.** VPN Genel Bakış sayfasına, Mihomo `select` veya sing-box `selector` gruplarında düğüm değiştirmek için bir panel ekler. Seçimler profil ve proxy grubu bazında kaydedilir. Mihomo bir Unix soketi, sing-box ise belirteçle korunan bir geri döngü arayüzü kullanır.
 - **Üç arayüz dili.** Basitleştirilmiş Çince, İngilizce ve Türkçe için LuCI dil ayarını izler. Diğer dil ayarlarında eklenen arayüz öğeleri İngilizce görüntülenir.
 
 ## Sürümler ve test ortamı
 
 | Bileşen | Temel alınan veya test edilen sürüm |
 | --- | --- |
-| Cihaz ve arayüz | MU300 / ZTE F50, orijinal mu300-linux LuCI |
+| Cihaz ve arayüz | ZTE F50, OpenWrt tabanlı mu300-linux ve MU300 kontrol paneli |
 | VPN modülü | mu300-vpn v2.0.4 |
 | Mihomo | v1.19.32 |
 | sing-box | v1.14.1 |

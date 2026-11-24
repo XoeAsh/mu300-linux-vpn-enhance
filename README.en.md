@@ -6,19 +6,19 @@
 
 > Translated by ChatGPT. This translation has not been proofread.
 
-Adds subscriptions that import complete configurations and node selection to the stock LuCI VPN pages on MU300 / ZTE F50 devices. Version **0.2.1** targets stock `mu300-vpn v2.0.4`. [mu300-linux](https://github.com/dikeckaan/mu300-linux) · [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn)
+Adds subscriptions for multi-node configurations and node selection to the MU300 VPN module. Version **0.2.1** targets stock `mu300-vpn v2.0.4`. [mu300-linux](https://github.com/dikeckaan/mu300-linux) · [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn)
 
 ## Features
 
-- **Full configuration subscriptions.** Supports sing-box 1.14 JSON, Mihomo YAML, and share links. The stock subscription manager handles refreshes using the saved format and refresh settings.
-- **Local node selection.** Switch nodes in Mihomo `select` groups or sing-box `selector` groups from the VPN Overview. Selections are saved per profile and proxy group. Mihomo uses a Unix socket, and sing-box uses a token-authenticated loopback interface.
+- **Multi-node configuration subscriptions.** Detects subscription links that return multi-node configurations in sing-box 1.14 JSON or Mihomo YAML. The stock subscription manager handles refreshes using the saved format and refresh settings.
+- **Local node selection.** Adds a panel to the VPN Overview for switching nodes in Mihomo `select` groups or sing-box `selector` groups. Selections are saved per profile and proxy group. Mihomo uses a Unix socket, and sing-box uses a token-authenticated loopback interface.
 - **Three interface languages.** Follows the LuCI language settings for Simplified Chinese, English, and Turkish. The added controls use English for other language settings.
 
 ## Versions and test environment
 
 | Component | Baseline or tested version |
 | --- | --- |
-| Device and interface | MU300 / ZTE F50, stock mu300-linux LuCI |
+| Device and interface | ZTE F50, OpenWrt mu300-linux with the MU300 control panel |
 | VPN module | mu300-vpn v2.0.4 |
 | Mihomo | v1.19.32 |
 | sing-box | v1.14.1 |
