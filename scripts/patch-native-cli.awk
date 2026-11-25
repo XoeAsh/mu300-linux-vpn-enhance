@@ -17,9 +17,19 @@ index($0, "subscription add NAME URL|- [--type auto|links|mihomo|dae]") {
 index($0, "case $_type in auto|links|mihomo|dae)") {
     sub(/auto\|links\|mihomo\|dae/, "auto|links|mihomo|sing-box|dae"); types++
 }
+$0 == "        killswitch_off; ipv6_guard_off; echo \"kill switch removed\"; routing_cleanup ;;" {
+    print "        killswitch_off; ipv6_guard_off; echo \"kill switch removed\""
+    print "        routing_cleanup"
+    print "        # routing_cleanup may skip work while the engine or TUN is still stopping."
+    print "        read_enable"
+    print "        if [ \"$ENABLE\" = 0 ]; then"
+    print "            nft delete table ip mu300_vpn_dns 2>/dev/null || true"
+    print "        fi ;;"
+    stopped++; next
+}
 { print }
 END {
-    if (fetch!=1 || fetch_end!=1 || url!=1 || format!=1 || unchanged!=1 || valid!=1 || usage!=1 || types!=1) {
+    if (fetch!=1 || fetch_end!=1 || url!=1 || format!=1 || unchanged!=1 || valid!=1 || usage!=1 || types!=1 || stopped!=1) {
         print "Unsupported native CLI structure; no changes installed" > "/dev/stderr"; exit 61
     }
 }
