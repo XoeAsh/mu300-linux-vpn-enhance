@@ -6,7 +6,7 @@
 
 > Translated by ChatGPT. This translation has not been proofread.
 
-Adds subscriptions for multi-node configurations and node selection to the MU300 VPN module. Version **0.2.1** targets stock `mu300-vpn v2.0.4`. [mu300-linux](https://github.com/dikeckaan/mu300-linux) · [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn)
+Adds subscriptions for multi-node configurations and node selection to the MU300 VPN module. Version **0.2.2** targets stock `mu300-vpn v2.0.4`. [mu300-linux](https://github.com/dikeckaan/mu300-linux) · [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn)
 
 ## Features
 
@@ -33,7 +33,7 @@ These steps use Windows PowerShell. Connect to the device via USB or your local 
 
 ### 1. Download the archive
 
-Save `mu300-linux-vpn-enhance-0.2.1.tar.gz` in your Windows **Downloads** folder. Leave it compressed so you can extract it on the device. [Download v0.2.1](https://github.com/xoeash/mu300-linux-vpn-enhance/archive/refs/tags/v0.2.1.tar.gz) · [Release page](https://github.com/xoeash/mu300-linux-vpn-enhance/releases/tag/v0.2.1)
+Save `mu300-linux-vpn-enhance-0.2.2.tar.gz` in your Windows **Downloads** folder. Leave it compressed so you can extract it on the device. [Download v0.2.2](https://github.com/xoeash/mu300-linux-vpn-enhance/archive/refs/tags/v0.2.2.tar.gz) · [Release page](https://github.com/xoeash/mu300-linux-vpn-enhance/releases/tag/v0.2.2)
 
 ### 2. Upload from Windows and log in
 
@@ -41,7 +41,7 @@ Open **PowerShell** and run the commands one at a time. Wait for `scp` to finish
 
 ```powershell
 Set-Location "$env:USERPROFILE\Downloads"
-scp -O ".\mu300-linux-vpn-enhance-0.2.1.tar.gz" root@192.168.77.1:/tmp/
+scp -O ".\mu300-linux-vpn-enhance-0.2.2.tar.gz" root@192.168.77.1:/tmp/
 ssh root@192.168.77.1
 ```
 
@@ -52,13 +52,13 @@ Enter the device's root password if prompted. The terminal hides the characters 
 Paste the following block into the SSH terminal. Each command runs after the previous one succeeds.
 
 ```sh
-tar -xzf /tmp/mu300-linux-vpn-enhance-0.2.1.tar.gz -C /tmp &&
-cd /tmp/mu300-linux-vpn-enhance-0.2.1 &&
+tar -xzf /tmp/mu300-linux-vpn-enhance-0.2.2.tar.gz -C /tmp &&
+cd /tmp/mu300-linux-vpn-enhance-0.2.2 &&
 sh install.sh &&
 sh audit.sh
 ```
 
-Once you see `Installed version: 0.2.1`, reopen the LuCI VPN page in your browser. The node controller takes effect the next time the VPN starts. The installer checks the stock files first and exits before editing system files if it finds an incompatible version.
+Once you see `Installed version: 0.2.2`, reopen the LuCI VPN page in your browser. The node controller takes effect the next time the VPN starts. The installer checks the stock files first and exits before editing system files if it finds an incompatible version.
 
 ## Usage
 

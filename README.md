@@ -4,7 +4,7 @@
 
 **简体中文** · [English](README.en.md) · [Türkçe](README.tr.md)
 
-为 MU300 的 VPN 模组添加多节点配置订阅和节点选择功能。当前版本为 **0.2.1**，安装基线为原版 `mu300-vpn v2.0.4`。[mu300-linux](https://github.com/dikeckaan/mu300-linux) · [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn)
+为 MU300 的 VPN 模组添加多节点配置订阅和节点选择功能。当前版本为 **0.2.2**，安装基线为原版 `mu300-vpn v2.0.4`。[mu300-linux](https://github.com/dikeckaan/mu300-linux) · [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn)
 
 ## 功能
 
@@ -31,7 +31,7 @@ sing-box 的导入、连接和节点选择已在 F50 上验证。Mihomo 的 Unix
 
 ### 1. 下载到电脑
 
-下载 `mu300-linux-vpn-enhance-0.2.1.tar.gz`，保存到 Windows 的 **下载** 文件夹。保留压缩包，稍后在设备上解压。[下载 v0.2.1](https://github.com/xoeash/mu300-linux-vpn-enhance/archive/refs/tags/v0.2.1.tar.gz) · [发布页面](https://github.com/xoeash/mu300-linux-vpn-enhance/releases/tag/v0.2.1)
+下载 `mu300-linux-vpn-enhance-0.2.2.tar.gz`，保存到 Windows 的 **下载** 文件夹。保留压缩包，稍后在设备上解压。[下载 v0.2.2](https://github.com/xoeash/mu300-linux-vpn-enhance/archive/refs/tags/v0.2.2.tar.gz) · [发布页面](https://github.com/xoeash/mu300-linux-vpn-enhance/releases/tag/v0.2.2)
 
 ### 2. 从 Windows 上传，再登录设备
 
@@ -39,7 +39,7 @@ sing-box 的导入、连接和节点选择已在 F50 上验证。Mihomo 的 Unix
 
 ```powershell
 Set-Location "$env:USERPROFILE\Downloads"
-scp -O ".\mu300-linux-vpn-enhance-0.2.1.tar.gz" root@192.168.77.1:/tmp/
+scp -O ".\mu300-linux-vpn-enhance-0.2.2.tar.gz" root@192.168.77.1:/tmp/
 ssh root@192.168.77.1
 ```
 
@@ -50,13 +50,13 @@ ssh root@192.168.77.1
 在刚打开的 SSH 终端复制下面整段。每一步成功才会继续下一步。
 
 ```sh
-tar -xzf /tmp/mu300-linux-vpn-enhance-0.2.1.tar.gz -C /tmp &&
-cd /tmp/mu300-linux-vpn-enhance-0.2.1 &&
+tar -xzf /tmp/mu300-linux-vpn-enhance-0.2.2.tar.gz -C /tmp &&
+cd /tmp/mu300-linux-vpn-enhance-0.2.2 &&
 sh install.sh &&
 sh audit.sh
 ```
 
-看到 `Installed version: 0.2.1` 后，在浏览器重新打开 LuCI 的 VPN 页面。节点控制接口会在 VPN 下次启动时生效。安装器会先检查原版文件结构，遇到不兼容的版本会在修改系统文件前退出。
+看到 `Installed version: 0.2.2` 后，在浏览器重新打开 LuCI 的 VPN 页面。节点控制接口会在 VPN 下次启动时生效。安装器会先检查原版文件结构，遇到不兼容的版本会在修改系统文件前退出。
 
 ## 使用
 
