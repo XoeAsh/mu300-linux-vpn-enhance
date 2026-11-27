@@ -6,7 +6,7 @@
 
 > Bu belge ChatGPT tarafından çevrilmiştir. Çeviri gözden geçirilmemiştir.
 
-MU300 VPN modülüne birden çok düğüm içeren yapılandırmalar için abonelik ve düğüm seçimi ekler. **0.2.1** sürümü, orijinal `mu300-vpn v2.0.4` sürümünü temel alır. [mu300-linux](https://github.com/dikeckaan/mu300-linux) · [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn)
+MU300 VPN modülüne birden çok düğüm içeren yapılandırmalar için abonelik ve düğüm seçimi ekler. **0.2.2** sürümü, orijinal `mu300-vpn v2.0.4` sürümünü temel alır. [mu300-linux](https://github.com/dikeckaan/mu300-linux) · [mu300-linux-vpn](https://github.com/dikeckaan/mu300-linux-vpn)
 
 ## Özellikler
 
@@ -33,7 +33,7 @@ Bu adımlar Windows PowerShell içindir. Cihaza USB veya yerel ağ üzerinden ba
 
 ### 1. Arşivi indirin
 
-`mu300-linux-vpn-enhance-0.2.1.tar.gz` dosyasını Windows'taki **İndirilenler** klasörüne kaydedin. Arşivi cihazda açacağınız için sıkıştırılmış olarak bırakın. [v0.2.1'i indir](https://github.com/xoeash/mu300-linux-vpn-enhance/archive/refs/tags/v0.2.1.tar.gz) · [Sürüm sayfası](https://github.com/xoeash/mu300-linux-vpn-enhance/releases/tag/v0.2.1)
+`mu300-linux-vpn-enhance-0.2.2.tar.gz` dosyasını Windows'taki **İndirilenler** klasörüne kaydedin. Arşivi cihazda açacağınız için sıkıştırılmış olarak bırakın. [v0.2.2'i indir](https://github.com/xoeash/mu300-linux-vpn-enhance/archive/refs/tags/v0.2.2.tar.gz) · [Sürüm sayfası](https://github.com/xoeash/mu300-linux-vpn-enhance/releases/tag/v0.2.2)
 
 ### 2. Windows'tan yükleyin ve oturum açın
 
@@ -41,7 +41,7 @@ Bu adımlar Windows PowerShell içindir. Cihaza USB veya yerel ağ üzerinden ba
 
 ```powershell
 Set-Location "$env:USERPROFILE\Downloads"
-scp -O ".\mu300-linux-vpn-enhance-0.2.1.tar.gz" root@192.168.77.1:/tmp/
+scp -O ".\mu300-linux-vpn-enhance-0.2.2.tar.gz" root@192.168.77.1:/tmp/
 ssh root@192.168.77.1
 ```
 
@@ -52,13 +52,13 @@ ssh root@192.168.77.1
 Aşağıdaki bloğu SSH terminaline yapıştırın. Her komut, bir önceki başarılı olunca çalışır.
 
 ```sh
-tar -xzf /tmp/mu300-linux-vpn-enhance-0.2.1.tar.gz -C /tmp &&
-cd /tmp/mu300-linux-vpn-enhance-0.2.1 &&
+tar -xzf /tmp/mu300-linux-vpn-enhance-0.2.2.tar.gz -C /tmp &&
+cd /tmp/mu300-linux-vpn-enhance-0.2.2 &&
 sh install.sh &&
 sh audit.sh
 ```
 
-`Installed version: 0.2.1` mesajını görünce tarayıcıda LuCI VPN sayfasını yeniden açın. Düğüm denetleyicisi, VPN bir sonraki kez başladığında devreye girer. Kurulum betiği önce orijinal dosyaları kontrol eder ve uyumsuz bir sürüm bulursa sistem dosyalarını değiştirmeden çıkar.
+`Installed version: 0.2.2` mesajını görünce tarayıcıda LuCI VPN sayfasını yeniden açın. Düğüm denetleyicisi, VPN bir sonraki kez başladığında devreye girer. Kurulum betiği önce orijinal dosyaları kontrol eder ve uyumsuz bir sürüm bulursa sistem dosyalarını değiştirmeden çıkar.
 
 ## Kullanım
 

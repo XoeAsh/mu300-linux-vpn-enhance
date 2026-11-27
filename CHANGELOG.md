@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2
+
+- Clear stale DNS redirection when the VPN is turned off, including when the stock cleanup skips work while the engine or tunnel interface is still stopping.
+
 ## 0.2.1
 
 - Add sing-box JSON subscriptions and retain the detected format when refreshing.

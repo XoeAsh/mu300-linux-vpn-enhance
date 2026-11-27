@@ -41,6 +41,14 @@ subscription_usage() {
 subscription_cmd() {
     case $_type in auto|links|mihomo|dae) : ;; esac
 }
+main() {
+    case "$1" in
+    off|stop)
+        set_enable 0
+        svc stop; svc disable
+        killswitch_off; ipv6_guard_off; echo "kill switch removed"; routing_cleanup ;;
+    esac
+}
 SRC
 awk -v base="$ROOT/snippets/" -f "$ROOT/scripts/patch-native-cli.awk" "$T/cli" > "$T/cli.patched" || fail 'CLI patch'
 grep -Fq 'SUB_DOWNLOAD_UA=sing-box/1.14.1' "$T/cli.patched" || fail 'CLI user agent'
@@ -48,6 +56,30 @@ grep -Fq 'cmp -s' "$T/cli.patched" || fail 'CLI no-change'
 grep -Fq 'subscription import/check failed' "$T/cli.patched" || fail 'CLI invalid complete config'
 ! awk -v base="$ROOT/snippets/" -f "$ROOT/scripts/patch-native-cli.awk" "$T/cli.patched" >/dev/null 2>&1 || fail 'CLI double patch should fail'
 sh "$ROOT/tests/subscriptions.sh" "$T" || fail 'CLI format selection and fallback'
+sh -s "$T" <<'SRC' || fail 'DNS redirect cleanup on VPN stop'
+set -eu
+. "$1/cli.patched"
+table=$1/stale-vpn-dns
+set_enable() { ENABLE=$1; }
+svc() { :; }
+killswitch_off() { :; }
+ipv6_guard_off() { :; }
+routing_cleanup() { :; }
+read_enable() { ENABLE=$saved_enable; }
+nft() {
+    [ "$*" = 'delete table ip mu300_vpn_dns' ] || exit 2
+    [ -f "$table" ] && rm "$table"
+}
+saved_enable=0
+touch "$table"
+main off >/dev/null
+[ ! -e "$table" ]
+main stop >/dev/null
+saved_enable=1
+touch "$table"
+main off >/dev/null
+[ -f "$table" ]
+SRC
 cat > "$T/driver" <<'SRC'
 MIHOMO_OURS='routing-mark allow-lan bind-address tun dns'
 routing-mark: $((MARK))
